@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Studio X — Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800&family=DM+Sans:ital,wght@0,400;0,500;0,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0f1f16;
+      --surface: #162a1e;
+      --card:    #1e3828;
+      --accent:  #c8f230;
+      --text:    #f5f5f0;
+      --muted:   rgba(245,245,240,0.55);
+      --cream:   #f0ede4;
+      --cream-muted: #d8d4c8;
+      --on-cream: #4a6355;
+      --mid-green: #2d5240;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #1a1a1a;
+      color: #f5f5f0;
+      padding: 40px 32px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Give each ds-section a subtle separator so dark sections don't merge with the page bg */
+    .ds-section {
+      background: #212121;
+      border-radius: 14px;
+      padding: 28px 28px 32px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* ── Sheet header ── */
+    .sheet-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 56px;
+      border-bottom: 1px solid rgba(200,242,48,0.2);
+      padding-bottom: 20px;
+    }
+    .sheet-header h1 {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 500;
+      font-size: 32px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .sheet-header span {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.3);
+    }
+
+    /* ── Section labels ── */
+    .ds-section { margin-bottom: 64px; }
+    .ds-label {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ds-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(200,242,48,0.15);
+    }
+
+    /* ── RESPONSIVE VALUES TABLE ── */
+    .rv-group { margin-bottom: 32px; }
+    .rv-group-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.3);
+      margin-bottom: 10px;
+    }
+
+    .rv-table { border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); }
+
+    .rv-thead {
+      display: grid;
+      grid-template-columns: 2fr 90px 120px 140px 1fr;
+      background: rgba(200,242,48,0.06);
+      padding: 8px 12px;
+      gap: 12px;
+    }
+    .rv-th {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(200,242,48,0.5);
+    }
+
+    .rv-row {
+      display: grid;
+      grid-template-columns: 2fr 90px 120px 140px 1fr;
+      padding: 9px 12px;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      align-items: center;
+    }
+    .rv-row:hover { background: rgba(255,255,255,0.02); }
+    .rv-row--last { border-bottom: none; }
+
+    .rv-col-name { font-size: 12px; color: rgba(245,245,240,0.7); }
+    .rv-val { font-size: 12px; color: rgba(245,245,240,0.6); font-variant-numeric: tabular-nums; }
+    .rv-val--accent { color: #c8f230; }
+    .rv-val--dim { color: rgba(245,245,240,0.25); font-style: italic; }
+    .rv-note { font-size: 11px; color: rgba(245,245,240,0.25); }
+
+    .rv-badge {
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 10px;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .rv-badge--fluid { background: rgba(200,242,48,0.12); color: #c8f230; }
+    .rv-badge--fixed { background: rgba(255,255,255,0.06); color: rgba(245,245,240,0.4); }
+    .rv-badge--bp    { background: rgba(100,180,255,0.1);  color: rgba(140,200,255,0.8); }
+
+    .rv-token {
+      font-size: 10px;
+      background: rgba(200,242,48,0.08);
+      color: #c8f230;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-right: 5px;
+      font-family: monospace;
+      letter-spacing: 0;
+    }
+
+    /* ── COLORS ── */
+    .color-group { margin-bottom: 28px; }
+    .color-group-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.3);
+      margin-bottom: 10px;
+    }
+    .swatches { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .swatch__rect {
+      width: 88px;
+      height: 64px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    .swatch__hex {
+      font-size: 11px;
+      color: rgba(245,245,240,0.5);
+      font-family: 'DM Sans', sans-serif;
+      letter-spacing: 0.04em;
+    }
+    .swatch__name {
+      font-size: 11px;
+      color: var(--text);
+      font-weight: 500;
+      text-align: center;
+      max-width: 88px;
+      line-height: 1.3;
+    }
+
+    /* ── TYPOGRAPHY ── */
+    .type-row {
+      padding: 20px 24px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+    .type-row--dark { background: var(--surface); }
+    .type-row--cream { background: var(--cream); }
+
+    .type-meta {
+      font-size: 10px;
+      color: rgba(245,245,240,0.3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      min-width: 160px;
+      flex-shrink: 0;
+      line-height: 1.5;
+    }
+    .type-row--cream .type-meta { color: rgba(15,31,22,0.35); }
+
+    .type-sample { line-height: 1; }
+
+    .barlow { font-family: 'Barlow Condensed', sans-serif; font-weight: 500; text-transform: uppercase; letter-spacing: 4px; }
+    .dm { font-family: 'DM Sans', sans-serif; }
+
+    /* ── SPACING & RADIUS ── */
+    .radius-row { display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; }
+    .radius-item { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .radius-box {
+      background: var(--card);
+      border: 1px solid rgba(200,242,48,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .radius-label {
+      font-size: 11px;
+      color: rgba(245,245,240,0.45);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .spacing-row { display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin-top: 24px; }
+    .spacing-item { display: flex; flex-direction: column; gap: 8px; }
+    .spacing-bar-wrap {
+      background: rgba(200,242,48,0.06);
+      border: 1px dashed rgba(200,242,48,0.2);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spacing-label {
+      font-size: 11px;
+      color: rgba(245,245,240,0.4);
+      line-height: 1.4;
+    }
+
+    /* ── BUTTONS ── */
+    .buttons-wrap {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 36px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .btn-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .btn-sublabel {
+      font-size: 10px;
+      color: rgba(245,245,240,0.3);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 12px 28px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: default;
+    }
+    .btn-lang {
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: rgba(245,245,240,0.55);
+      background: transparent;
+      letter-spacing: 0.1em;
+      cursor: default;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .btn-submit {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: default;
+    }
+
+    /* ── GRAPHIC ELEMENTS ── */
+    .graphic-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    .graphic-item { border-radius: 12px; overflow: hidden; }
+    .graphic-caption {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(245,245,240,0.35);
+      margin-top: 8px;
+    }
+
+    /* grid texture */
+    .demo-grid {
+      height: 140px;
+      background: var(--bg);
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(200,242,48,0.05) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,242,48,0.05) 60px);
+      border-radius: 12px;
+    }
+
+    /* circles */
+    .demo-circles {
+      height: 140px;
+      background: var(--bg);
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-circles .c1, .demo-circles .c2 {
+      position: absolute;
+      border-radius: 50%;
+      bottom: -40px;
+      right: -40px;
+    }
+    .demo-circles .c1 {
+      width: 140px; height: 140px;
+      border: 1px solid rgba(200,242,48,0.18);
+    }
+    .demo-circles .c2 {
+      width: 200px; height: 200px;
+      border: 1px solid rgba(200,242,48,0.09);
+    }
+
+    /* treatment card */
+    .demo-card {
+      background: var(--card);
+      border: 1px solid rgba(200,242,48,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    .demo-card__icon { font-size: 22px; color: var(--accent); margin-bottom: 10px; }
+    .demo-card__name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+    .demo-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 6px 0 14px;
+      flex: 1;
+    }
+    .demo-card__tags { display: flex; gap: 6px; }
+    .tag {
+      font-size: 10px;
+      color: var(--accent);
+      background: rgba(200,242,48,0.08);
+      padding: 3px 10px;
+      border-radius: 10px;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── SECTION BACKGROUNDS ── */
+    .bg-strip-row { display: flex; overflow: hidden; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); }
+    .bg-strip {
+      flex: 1;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bg-strip span {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+    .bg-strip--dark-label span { color: var(--text); }
+    .bg-strip--cream-label span { color: var(--cream-heading, #0f1f16); }
+  </style>
+</head>
+<body>
+
+  <div class="sheet-header">
+    <h1>Studio X — Design System</h1>
+    <span>Reference v1.0 · 2026</span>
+  </div>
+
+  <!-- ══════════════════════ COLORS ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">01 · Colors</div>
+
+    <div class="color-group">
+      <div class="color-group-label">Dark Backgrounds</div>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#0f1f16;"></div>
+          <div class="swatch__hex">#0f1f16</div>
+          <div class="swatch__name">Base</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#162a1e;"></div>
+          <div class="swatch__hex">#162a1e</div>
+          <div class="swatch__name">Surface</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#1e3828;"></div>
+          <div class="swatch__hex">#1e3828</div>
+          <div class="swatch__name">Card</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Accent</div>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#c8f230;"></div>
+          <div class="swatch__hex">#c8f230</div>
+          <div class="swatch__name">Accent / Neon green</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Light Surfaces</div>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#f0ede4;"></div>
+          <div class="swatch__hex">#f0ede4</div>
+          <div class="swatch__name">Cream</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#d8d4c8;"></div>
+          <div class="swatch__hex">#d8d4c8</div>
+          <div class="swatch__name">Cream muted</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Text</div>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#f5f5f0;"></div>
+          <div class="swatch__hex">#f5f5f0</div>
+          <div class="swatch__name">Primary</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:rgba(245,245,240,0.55); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);"></div>
+          <div class="swatch__hex">rgba(…,0.55)</div>
+          <div class="swatch__name">Muted</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#4a6355;"></div>
+          <div class="swatch__hex">#4a6355</div>
+          <div class="swatch__name">On cream</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">On-brand Greens</div>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#2d5240;"></div>
+          <div class="swatch__hex">#2d5240</div>
+          <div class="swatch__name">Mid green</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__rect" style="background:#0f1f16;"></div>
+          <div class="swatch__hex">#0f1f16</div>
+          <div class="swatch__name">Dark green label</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ TYPOGRAPHY ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">02 · Typography</div>
+
+    <!-- Barlow 64px -->
+    <div class="type-row type-row--dark">
+      <div class="type-meta">Barlow Condensed <strong style="color:#c8f230;">500</strong><br>64px · uppercase · ls 4px</div>
+      <div class="type-sample barlow" style="font-size:64px; font-weight:500; letter-spacing:4px; color:#f5f5f0; line-height:1;">PRESTERA.</div>
+    </div>
+
+    <!-- Barlow 36px -->
+    <div class="type-row type-row--dark">
+      <div class="type-meta">Barlow Condensed <strong style="color:#c8f230;">500</strong><br>36px · section title · ls 4px</div>
+      <div class="type-sample barlow" style="font-size:36px; font-weight:500; letter-spacing:4px; color:#f5f5f0; line-height:1;">BEHANDLINGAR</div>
+    </div>
+
+    <!-- Barlow 18px -->
+    <div class="type-row type-row--dark">
+      <div class="type-meta">Barlow Condensed <strong style="color:#c8f230;">500</strong><br>18px · card name / sub-label · ls 4px</div>
+      <div class="type-sample barlow" style="font-size:18px; font-weight:500; letter-spacing:4px; color:#f5f5f0; line-height:1;">OM MIG</div>
+    </div>
+
+    <!-- DM Sans body on cream -->
+    <div class="type-row type-row--cream">
+      <div class="type-meta" style="color:rgba(15,31,22,0.35);">DM Sans 400<br>15px · body · line-height 1.8</div>
+      <div class="type-sample dm" style="font-size:15px; color:#4a6355; line-height:1.8; max-width:520px;">Oavsett om du söker återhämtning eller vill ta din träning till nästa nivå — här hittar du rätt behandling för dig.</div>
+    </div>
+
+    <!-- DM Sans eyebrow -->
+    <div class="type-row type-row--dark">
+      <div class="type-meta">DM Sans 400<br>14px · eyebrow · ls 0.3em</div>
+      <div class="type-sample dm" style="font-size:14px; text-transform:uppercase; letter-spacing:0.3em; color:#c8f230;">TJÄNSTER</div>
+    </div>
+
+    <!-- Nav links — NEW STYLE -->
+    <div class="type-row type-row--dark" style="border: 1px solid rgba(200,242,48,0.15); border-radius: 8px; margin-top: 8px;">
+      <div class="type-meta">
+        DM Sans <strong style="color:#c8f230;">700</strong><br>
+        <strong style="color:#c8f230;">16px</strong> · nav links · uppercase<br>
+        <span style="font-size:10px; color:rgba(200,242,48,0.5); letter-spacing:0.15em;">NEW STYLE</span>
+      </div>
+      <div style="display:flex; gap:28px; align-items:center; flex-wrap:wrap;">
+        <span class="type-sample dm" style="font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f5f5f0; opacity:0.85;">Behandlingar</span>
+        <span class="type-sample dm" style="font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f5f5f0; opacity:0.85;">PT</span>
+        <span class="type-sample dm" style="font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f5f5f0; opacity:0.85;">Om mig</span>
+        <span class="type-sample dm" style="font-size:16px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#f5f5f0; opacity:0.85;">Kontakt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ SPACING & RADIUS ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">03 · Spacing &amp; Radius</div>
+
+    <div class="radius-row">
+      <div class="radius-item">
+        <div class="radius-box" style="width:100px; height:64px; border-radius:0;"></div>
+        <div class="radius-label">0px<br>No radius</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="width:100px; height:64px; border-radius:8px;"></div>
+        <div class="radius-label">8px<br>Input fields</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="width:100px; height:64px; border-radius:12px;"></div>
+        <div class="radius-label">12px<br>Cards</div>
+      </div>
+      <div class="radius-item">
+        <div class="radius-box" style="width:120px; height:40px; border-radius:20px;"></div>
+        <div class="radius-label">20px<br>Buttons (pill)</div>
+      </div>
+    </div>
+
+    <div class="spacing-row">
+      <div class="spacing-item">
+        <div class="spacing-bar-wrap" style="width:80px; height:80px; flex-direction:column; justify-content:center; gap:4px;">
+          <div style="font-size:11px; color:#c8f230; font-weight:700;">80px</div>
+          <div style="font-size:9px; color:rgba(245,245,240,0.3); letter-spacing:0.1em;">VERTICAL</div>
+        </div>
+        <div class="spacing-label">Section<br>top/bottom padding</div>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar-wrap" style="width:80px; height:80px; flex-direction:column; justify-content:center; gap:4px;">
+          <div style="font-size:11px; color:#c8f230; font-weight:700;">6%</div>
+          <div style="font-size:9px; color:rgba(245,245,240,0.3); letter-spacing:0.1em;">HORIZONTAL</div>
+        </div>
+        <div class="spacing-label">Section<br>side padding</div>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar-wrap" style="width:80px; height:80px; flex-direction:column; justify-content:center; gap:4px;">
+          <div style="font-size:11px; color:#c8f230; font-weight:700;">56px</div>
+          <div style="font-size:9px; color:rgba(245,245,240,0.3); letter-spacing:0.1em;">HEIGHT</div>
+        </div>
+        <div class="spacing-label">Navbar<br>fixed height</div>
+      </div>
+      <div class="spacing-item">
+        <div class="spacing-bar-wrap" style="width:80px; height:80px; flex-direction:column; justify-content:center; gap:4px;">
+          <div style="font-size:11px; color:#c8f230; font-weight:700;">16px</div>
+          <div style="font-size:9px; color:rgba(245,245,240,0.3); letter-spacing:0.1em;">GAP</div>
+        </div>
+        <div class="spacing-label">Card grid<br>gap</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ BUTTONS ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">04 · Buttons</div>
+
+    <div class="buttons-wrap">
+      <div class="btn-item">
+        <button class="btn-primary">BOKA TID →</button>
+        <div class="btn-sublabel">Primary<br>#c8f230 bg · bold · pill</div>
+      </div>
+      <div class="btn-item">
+        <button class="btn-lang">SV / EN</button>
+        <div class="btn-sublabel">Language toggle<br>transparent · border · muted</div>
+      </div>
+      <div class="btn-item">
+        <button class="btn-submit">SKICKA</button>
+        <div class="btn-sublabel">Form submit<br>same as primary · smaller</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ GRAPHIC ELEMENTS ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">05 · Graphic Elements</div>
+
+    <div class="graphic-row">
+      <div>
+        <div class="demo-grid"></div>
+        <div class="graphic-caption">Grid texture — accent at 5% opacity</div>
+      </div>
+      <div>
+        <div class="demo-circles">
+          <div class="c1"></div>
+          <div class="c2"></div>
+        </div>
+        <div class="graphic-caption">Decorative circles — border only</div>
+      </div>
+      <div>
+        <div class="demo-card">
+          <div class="demo-card__name">Sportmassage</div>
+          <p class="demo-card__desc">Anpassad för aktiva — förebygger skador och påskyndar återhämtning.</p>
+          <div class="demo-card__tags">
+            <span class="tag">60 min</span>
+            <span class="tag">950 kr</span>
+          </div>
+        </div>
+        <div class="graphic-caption">Treatment card</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ SECTION BACKGROUNDS ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">06 · Section Backgrounds</div>
+
+    <div class="bg-strip-row">
+      <div class="bg-strip bg-strip--dark-label" style="background:#0f1f16; border-right: 1px solid rgba(255,255,255,0.05);">
+        <span>#0f1f16 · Hero / Footer</span>
+      </div>
+      <div class="bg-strip bg-strip--dark-label" style="background:#162a1e; border-right: 1px solid rgba(255,255,255,0.05);">
+        <span>#162a1e · Treatments / Contact</span>
+      </div>
+      <div class="bg-strip" style="background:#f0ede4;">
+        <span style="color:#2d5240; opacity:0.6;">#f0ede4 · About</span>
+      </div>
+    </div>
+
+    <div style="margin-top: 16px; display:flex; gap: 16px;">
+      <div style="flex:1; padding:12px 16px; background:#0f1f16; border-radius:8px; border: 1px solid rgba(200,242,48,0.08);">
+        <div style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Navbar border (scrolled)</div>
+        <div style="height:1px; background:rgba(200,242,48,0.15);"></div>
+        <div style="font-size:10px; color:rgba(245,245,240,0.3); margin-top:6px;">rgba(200,242,48,0.15)</div>
+      </div>
+      <div style="flex:1; padding:12px 16px; background:#162a1e; border-radius:8px; border: 1px solid rgba(200,242,48,0.08);">
+        <div style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Card border</div>
+        <div style="height:1px; background:rgba(200,242,48,0.08);"></div>
+        <div style="font-size:10px; color:rgba(245,245,240,0.3); margin-top:6px;">rgba(200,242,48,0.08)</div>
+      </div>
+      <div style="flex:1; padding:12px 16px; background:#162a1e; border-radius:8px; border: 1px solid rgba(200,242,48,0.08);">
+        <div style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Footer border-top</div>
+        <div style="height:1px; background:rgba(200,242,48,0.1);"></div>
+        <div style="font-size:10px; color:rgba(245,245,240,0.3); margin-top:6px;">rgba(200,242,48,0.10)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ RESPONSIVE VALUES ══════════════════════ -->
+  <div class="ds-section">
+    <div class="ds-label">07 · Responsive Values</div>
+
+    <p style="font-size:12px; color:rgba(245,245,240,0.35); margin-bottom:24px; line-height:1.6;">
+      Single breakpoint: <code style="background:rgba(200,242,48,0.08); color:#c8f230; padding:2px 7px; border-radius:4px; font-size:11px;">@media (max-width: 768px)</code> &nbsp;·&nbsp;
+      Fluid values use <code style="background:rgba(200,242,48,0.08); color:#c8f230; padding:2px 7px; border-radius:4px; font-size:11px;">clamp(min, fluid, max)</code>
+    </p>
+
+    <!-- FONT SIZES -->
+    <div class="rv-group">
+      <div class="rv-group-label">Font sizes</div>
+      <div class="rv-table">
+        <div class="rv-thead">
+          <div class="rv-th rv-col-name">Property / Element</div>
+          <div class="rv-th rv-col-type">Method</div>
+          <div class="rv-th rv-col-mobile">Mobile (≤768px)</div>
+          <div class="rv-th rv-col-desktop">Desktop (&gt;768px)</div>
+          <div class="rv-th rv-col-note">Note</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name"><span class="rv-token">h1</span> Hero heading</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fluid">clamp</span></div>
+          <div class="rv-col-mobile rv-val">52px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">88px</div>
+          <div class="rv-col-note rv-note">clamp(52px, 8vw, 88px)</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name"><span class="rv-token">h2</span> Section title</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fluid">clamp</span></div>
+          <div class="rv-col-mobile rv-val">28px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">36px</div>
+          <div class="rv-col-note rv-note">clamp(28px, 4vw, 36px)</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name"><span class="rv-token">h3</span> Card name</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">16px</div>
+          <div class="rv-col-desktop rv-val">16px</div>
+          <div class="rv-col-note rv-note">Barlow Condensed 700 — no icon</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Body / bio text</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">15px</div>
+          <div class="rv-col-desktop rv-val">15px</div>
+          <div class="rv-col-note rv-note">DM Sans 400, line-height 1.8</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Section intro paragraph</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">15px</div>
+          <div class="rv-col-desktop rv-val">15px</div>
+          <div class="rv-col-note rv-note">opacity 0.75</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Card description</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">13px</div>
+          <div class="rv-col-desktop rv-val">13px</div>
+          <div class="rv-col-note rv-note">opacity 0.75</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Hero subheading</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">14px</div>
+          <div class="rv-col-desktop rv-val">14px</div>
+          <div class="rv-col-note rv-note">opacity 0.75</div>
+        </div>
+
+        <div class="rv-row" style="background:rgba(200,242,48,0.04);">
+          <div class="rv-col-name">Nav links <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--dim">— (hidden)</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">16px · 700</div>
+          <div class="rv-col-note rv-note">DM Sans bold, uppercase, ls 0.08em</div>
+        </div>
+
+        <div class="rv-row" style="background:rgba(200,242,48,0.04);">
+          <div class="rv-col-name">Eyebrow labels <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">14px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">14px</div>
+          <div class="rv-col-note rv-note">was 10–11px, bumped to min 14px</div>
+        </div>
+
+        <div class="rv-row" style="background:rgba(200,242,48,0.04);">
+          <div class="rv-col-name">Price / duration tags <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">14px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">14px</div>
+          <div class="rv-col-note rv-note">was 10px, bumped to min 14px</div>
+        </div>
+
+        <div class="rv-row" style="background:rgba(200,242,48,0.04);">
+          <div class="rv-col-name">Boka / CTA button <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">14px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">14px</div>
+          <div class="rv-col-note rv-note">was 13px, hero .btn-primary</div>
+        </div>
+
+        <div class="rv-row" style="background:rgba(200,242,42,0.04);">
+          <div class="rv-col-name">Navbar Boka button <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--dim">— (hidden)</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">14px</div>
+          <div class="rv-col-note rv-note">was 11px, .btn-boka</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Contact info text</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">14px</div>
+          <div class="rv-col-desktop rv-val">14px</div>
+          <div class="rv-col-note rv-note">address / phone / email</div>
+        </div>
+
+        <div class="rv-row rv-row--last" style="background:rgba(200,242,48,0.04);">
+          <div class="rv-col-name">Footer copyright <span style="font-size:10px; color:#c8f230; background:rgba(200,242,48,0.1); padding:1px 6px; border-radius:4px; margin-left:4px;">updated</span></div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">14px</div>
+          <div class="rv-col-desktop rv-val rv-val--accent">14px</div>
+          <div class="rv-col-note rv-note">was 11px, opacity 0.25</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION PADDING -->
+    <div class="rv-group">
+      <div class="rv-group-label">Section padding</div>
+      <div class="rv-table">
+        <div class="rv-thead">
+          <div class="rv-th rv-col-name">Element</div>
+          <div class="rv-th rv-col-type">Method</div>
+          <div class="rv-th rv-col-mobile">Mobile (≤768px)</div>
+          <div class="rv-th rv-col-desktop">Desktop (&gt;768px)</div>
+          <div class="rv-th rv-col-note">Note</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Treatments, About, Contact sections</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">80px 6%</div>
+          <div class="rv-col-desktop rv-val">80px 6%</div>
+          <div class="rv-col-note rv-note">Same at all sizes</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Hero section (#home) — horizontal</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">6% left + right</div>
+          <div class="rv-col-desktop rv-val">8% left only</div>
+          <div class="rv-col-note rv-note">Right side opens up on desktop</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Navbar</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">0 5%</div>
+          <div class="rv-col-desktop rv-val">0 5%</div>
+          <div class="rv-col-note rv-note">height always 56px</div>
+        </div>
+
+        <div class="rv-row rv-row--last">
+          <div class="rv-col-name">Footer</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">20px 6%</div>
+          <div class="rv-col-desktop rv-val">20px 6%</div>
+          <div class="rv-col-note rv-note">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD PADDING -->
+    <div class="rv-group">
+      <div class="rv-group-label">Card padding</div>
+      <div class="rv-table">
+        <div class="rv-thead">
+          <div class="rv-th rv-col-name">Element</div>
+          <div class="rv-th rv-col-type">Method</div>
+          <div class="rv-th rv-col-mobile">Mobile (≤768px)</div>
+          <div class="rv-th rv-col-desktop">Desktop (&gt;768px)</div>
+          <div class="rv-th rv-col-note">Note</div>
+        </div>
+
+        <div class="rv-row rv-row--last">
+          <div class="rv-col-name">Treatment cards (.card)</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--fixed">fixed</span></div>
+          <div class="rv-col-mobile rv-val">20px</div>
+          <div class="rv-col-desktop rv-val">20px</div>
+          <div class="rv-col-note rv-note">All sides, border-radius 12px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAPS & MARGINS -->
+    <div class="rv-group">
+      <div class="rv-group-label">Gaps &amp; margins that change at breakpoints</div>
+      <div class="rv-table">
+        <div class="rv-thead">
+          <div class="rv-th rv-col-name">Element</div>
+          <div class="rv-th rv-col-type">Method</div>
+          <div class="rv-th rv-col-mobile">Mobile (≤768px)</div>
+          <div class="rv-th rv-col-desktop">Desktop (&gt;768px)</div>
+          <div class="rv-th rv-col-note">Note</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Card grid (.card-grid)</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">1 column, gap 16px</div>
+          <div class="rv-col-desktop rv-val">2 columns, gap 16px</div>
+          <div class="rv-col-note rv-note">Grid collapses to single column</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">About grid (.about__grid)</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">1 column, gap 24px</div>
+          <div class="rv-col-desktop rv-val">280px + 1fr, gap 48px</div>
+          <div class="rv-col-note rv-note">Photo stacks above text</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">About photo height</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">240px</div>
+          <div class="rv-col-desktop rv-val">320px</div>
+          <div class="rv-col-note rv-note">Shorter on mobile to save viewport</div>
+        </div>
+
+        <div class="rv-row">
+          <div class="rv-col-name">Contact grid (.contact__grid)</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--accent">1 column, gap 32px</div>
+          <div class="rv-col-desktop rv-val">1fr + 1fr, gap 48px</div>
+          <div class="rv-col-note rv-note">Form stacks below contact info</div>
+        </div>
+
+        <div class="rv-row rv-row--last">
+          <div class="rv-col-name">Nav links gap</div>
+          <div class="rv-col-type"><span class="rv-badge rv-badge--bp">breakpoint</span></div>
+          <div class="rv-col-mobile rv-val rv-val--dim">— (hidden)</div>
+          <div class="rv-col-desktop rv-val">20px between links</div>
+          <div class="rv-col-note rv-note">Replaced by hamburger on mobile</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BREAKPOINT SUMMARY PILL -->
+    <div style="margin-top:28px; padding:16px 20px; background:rgba(200,242,48,0.05); border:1px solid rgba(200,242,48,0.12); border-radius:10px; display:flex; gap:32px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Only breakpoint</div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#c8f230; letter-spacing:0.05em;">768px</div>
+        <div style="font-size:11px; color:rgba(245,245,240,0.35); margin-top:2px;">max-width — mobile-first</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.07); flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Fluid range</div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#f5f5f0; letter-spacing:0.05em;">Any width</div>
+        <div style="font-size:11px; color:rgba(245,245,240,0.35); margin-top:2px;">clamp() handles everything between</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.07); flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Clamp values</div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#f5f5f0; letter-spacing:0.05em;">2</div>
+        <div style="font-size:11px; color:rgba(245,245,240,0.35); margin-top:2px;">h1 (52→88px) · h2 (28→36px)</div>
+      </div>
+      <div style="width:1px; background:rgba(255,255,255,0.07); flex-shrink:0;"></div>
+      <div>
+        <div style="font-size:9px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(200,242,48,0.5); margin-bottom:6px;">Breakpoint changes</div>
+        <div style="font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:800; color:#f5f5f0; letter-spacing:0.05em;">6</div>
+        <div style="font-size:11px; color:rgba(245,245,240,0.35); margin-top:2px;">layout, grid, spacing, photo height</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

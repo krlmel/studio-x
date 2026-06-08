@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magnus — Massageterapi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,800;1,300&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1f16;
+      --surface: #162a1e;
+      --card: #1e3828;
+      --accent: #DCFF76;
+      --text: #f5f5f0;
+      --muted: rgba(245,245,240,0.55);
+      --cream: #f0ede4;
+      --cream-heading: #0f1f16;
+      --cream-body: #4a6355;
+      --cream-label: #2d5240;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    body.menu-open { overflow: hidden; }
+
+    h1, h2, h3, h4 {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    /* ─── SKIP LINK ─── */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      z-index: 9999;
+    }
+    .skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+      background: #c8f230;
+      color: #0f1f16;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      z-index: 9999;
+    }
+
+    /* ─── FOCUS RINGS ─── */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid #c8f230;
+      outline-offset: 3px;
+    }
+
+    /* ─── NAVBAR ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      transition: background-color 0.3s ease, border-bottom 0.3s ease;
+    }
+
+    .nav--scrolled {
+      background: var(--bg);
+      border-bottom: 1px solid rgba(200,242,48,0.15);
+    }
+
+    .nav__logo { display: flex; flex-direction: column; line-height: 1; }
+    .nav__logo-name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      font-size: 20px;
+      color: var(--text);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav__logo-sub {
+      font-size: 14px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .nav__right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav__links {
+      display: flex;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav__links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+      opacity: 1;
+      transition: opacity 0.2s;
+    }
+    .nav__links a:hover { opacity: 1; }
+
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid var(--text);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+    }
+
+    .lang-switcher__sep {
+      color: var(--text);
+      margin: 0 2px;
+      user-select: none;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      font-weight: 400;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .lang-btn:hover { opacity: 0.75; }
+    .lang-btn.active {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .btn-boka {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+    .btn-boka:hover { opacity: 0.88; }
+
+    /* hamburger */
+    .nav__hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .nav__hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+    }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+    }
+    .mobile-menu.is-open { display: flex; }
+
+    .mobile-menu__overlay {
+      width: 38%;
+      background: rgba(0,0,0,0.6);
+      cursor: pointer;
+    }
+
+    .mobile-menu__panel {
+      width: 62%;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      padding: 32px 24px 24px;
+      transform: translateX(100%);
+      transition: transform 300ms ease;
+    }
+    .mobile-menu.is-open .mobile-menu__panel { transform: translateX(0); }
+
+    .mobile-menu__label {
+      font-size: 14px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .mobile-menu__links {
+      list-style: none;
+      flex: 1;
+    }
+    .mobile-menu__links li {
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .mobile-menu__links a {
+      display: block;
+      padding: 12px 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .mobile-menu__lang {
+      padding: 12px 0;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      letter-spacing: 0.08em;
+      display: flex;
+      gap: 2px;
+      align-items: center;
+    }
+
+    .mobile-menu__boka {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 20px;
+      padding: 12px;
+      text-decoration: none;
+    }
+
+    .mobile-menu__close {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      color: rgba(245,245,240,0.4);
+      font-size: 14px;
+      border: none;
+      background: none;
+    }
+    .mobile-menu__close i { font-size: 16px; }
+
+    /* ─── HERO ─── */
+    #home {
+      height: 100vh;
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(to right, rgba(15,31,22,0.44) 40%, rgba(15,31,22,0.22) 100%),
+        url('bg-test2.png');
+      background-size: cover;
+      background-position: center;
+      padding-top: 56px;
+      display: flex;
+      align-items: center;
+      padding-left: 8%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero__grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(200,242,48,0.05) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,242,48,0.05) 60px);
+      pointer-events: none;
+    }
+
+    .hero__circle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .hero__circle--1 {
+      width: 400px; height: 400px;
+      bottom: -60px; right: -60px;
+      border: 1px solid rgba(200,242,48,0.12);
+    }
+    .hero__circle--2 {
+      width: 560px; height: 560px;
+      bottom: -130px; right: -130px;
+      border: 1px solid rgba(200,242,48,0.07);
+    }
+
+    .hero__content { position: relative; z-index: 1; max-width: 640px; }
+
+    .eyebrow {
+      font-size: 14px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .hero__h1 {
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 1.05;
+      color: var(--text);
+    }
+    .hero__h1 .accent { color: var(--accent); }
+
+    .hero__sub {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 12px;
+      line-height: 1.6;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      margin-top: 28px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 12px 28px;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    /* ─── TREATMENTS ─── */
+    #treatments {
+      background: var(--surface);
+      padding: 80px 6%;
+    }
+
+    .section-eyebrow {
+      font-size: 14px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--accent);
+      display: none;
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 36px);
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .section-intro {
+      font-size: 15px;
+      color: rgba(245,245,240,0.75);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(200,242,48,0.08);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card__icon {
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .card__name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      font-size: 16px;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .card__desc {
+      font-size: 14px;
+      color: rgba(245,245,240,0.75);
+      line-height: 1.6;
+      margin: 6px 0 14px;
+      flex: 1;
+    }
+
+    .card__tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 14px;
+      color: var(--accent);
+      background: rgba(200,242,48,0.08);
+      padding: 3px 10px;
+      border-radius: 10px;
+      letter-spacing: 0.06em;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--cream);
+      padding: 80px 6%;
+    }
+
+    #about .section-eyebrow { color: var(--cream-label); }
+    #about .section-title { color: var(--cream-heading); }
+
+    .about__grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 8px;
+    }
+
+    .about__photo {
+      background: #d8d4c8;
+      border: 1px solid var(--cream-label);
+      border-radius: 12px;
+      height: 320px;
+    }
+
+    .about__role {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--cream-label);
+      margin-bottom: 16px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .about__bio {
+      font-size: 15px;
+      color: var(--cream-body);
+      line-height: 1.8;
+    }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      background: var(--surface);
+      padding: 80px 6%;
+    }
+
+    .contact__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 40px;
+    }
+
+    .contact__item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .contact__item i {
+      font-size: 16px;
+      color: var(--accent);
+      margin-top: 1px;
+      flex-shrink: 0;
+    }
+
+    .contact__item span {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    /* Visually hidden utility for form labels */
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .form-field {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      margin-bottom: 10px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-field::placeholder { color: rgba(255,255,255,0.25); }
+    .form-field:focus { border-color: rgba(200,242,48,0.35); }
+
+    textarea.form-field { height: 100px; resize: vertical; }
+
+    .btn-submit {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      font-family: 'DM Sans', sans-serif;
+      text-transform: uppercase;
+      border-radius: 20px;
+      padding: 10px 24px;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.88; }
+
+    .form-thanks {
+      display: none;
+      text-align: center;
+      color: var(--accent);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 32px 0;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid rgba(200,242,48,0.1);
+      padding: 20px 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .footer__copy {
+      font-size: 14px;
+      color: rgba(245,245,240,0.25);
+    }
+
+    /* ─── SCROLL ANIMATIONS ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .nav__right { display: none; }
+      .nav__hamburger { display: flex; }
+
+      .card-grid { grid-template-columns: 1fr; }
+
+      .about__grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .about__photo { height: 240px; }
+
+      .contact__grid { grid-template-columns: 1fr; gap: 32px; }
+
+      #home { padding-left: 6%; padding-right: 6%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── SKIP LINK ─── -->
+<a href="#main-content" class="skip-link">Hoppa till innehåll</a>
+
+<!-- ─── NAVBAR ─── -->
+<header>
+  <nav class="nav" id="navbar" role="navigation" aria-label="Huvudnavigation">
+    <a href="#home" class="nav__logo" style="text-decoration:none;">
+      <span class="nav__logo-name">Magnus</span>
+      <span class="nav__logo-sub" data-i18n="nav.subtitle">Massageterapi</span>
+    </a>
+    <div class="nav__right">
+      <ul class="nav__links">
+        <li><a href="#treatments" data-i18n="nav.treatments">Behandlingar</a></li>
+        <li><a href="#treatments" data-i18n="nav.pt">PT</a></li>
+        <li><a href="#about" data-i18n="nav.about">Om mig</a></li>
+        <li><a href="#contact" data-i18n="nav.contact">Kontakt</a></li>
+      </ul>
+      <div class="lang-switcher" aria-label="Välj språk">
+        <button class="lang-btn" data-lang="sv">SV</button>
+        <span class="lang-switcher__sep">/</span>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <span class="lang-switcher__sep">/</span>
+        <button class="lang-btn" data-lang="es">ES</button>
+      </div>
+      <a href="#contact" class="btn-boka" data-i18n="nav.boka" aria-label="Boka tid — öppnas på extern bokningssida">Boka</a>
+    </div>
+    <button class="nav__hamburger" id="hamburger" aria-label="Öppna meny" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- ─── MOBILE MENU ─── -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <div class="mobile-menu__overlay" id="menuOverlay"></div>
+  <div class="mobile-menu__panel">
+    <span class="mobile-menu__label" data-i18n="menu.label">Meny</span>
+    <ul class="mobile-menu__links">
+      <li><a href="#treatments" class="menu-link" data-i18n="nav.treatments">Behandlingar</a></li>
+      <li><a href="#treatments" class="menu-link" data-i18n="nav.pt">PT</a></li>
+      <li><a href="#about" class="menu-link" data-i18n="nav.about">Om mig</a></li>
+      <li><a href="#contact" class="menu-link" data-i18n="nav.contact">Kontakt</a></li>
+    </ul>
+    <div class="mobile-menu__lang" aria-label="Välj språk">
+        <button class="lang-btn" data-lang="sv">SV</button>
+        <span class="lang-switcher__sep">/</span>
+        <button class="lang-btn" data-lang="en">EN</button>
+        <span class="lang-switcher__sep">/</span>
+        <button class="lang-btn" data-lang="es">ES</button>
+      </div>
+    <a href="#contact" class="mobile-menu__boka menu-link" data-i18n="nav.boka" aria-label="Boka tid — öppnas på extern bokningssida">Boka</a>
+    <button class="mobile-menu__close" id="menuClose">
+      <i class="ti ti-x" aria-hidden="true"></i>
+      <span data-i18n="menu.close">Stäng</span>
+    </button>
+  </div>
+</div>
+
+<!-- ─── MAIN CONTENT ─── -->
+<main id="main-content">
+
+  <!-- ─── HERO ─── -->
+  <section id="home" aria-label="Introduktion">
+    <div class="hero__grid" aria-hidden="true"></div>
+    <div class="hero__circle hero__circle--1" aria-hidden="true"></div>
+    <div class="hero__circle hero__circle--2" aria-hidden="true"></div>
+    <div class="hero__content">
+      <span class="eyebrow" data-i18n="hero.eyebrow">Östra Sorgenfri · Malmö</span>
+      <h1 class="hero__h1">
+        <span data-i18n="hero.line1" style="font-weight:300;font-style:italic;">Massage &amp;</span><br>
+        <span class="accent" data-i18n="hero.line2">Träning</span>
+      </h1>
+      <p class="hero__sub" data-i18n="hero.sub">För att kunna slappna av, röra sig utan smärta och må bra.</p>
+      <a href="#contact" class="btn-primary" data-i18n="hero.cta" aria-label="Boka din tid — öppnas på extern bokningssida">Boka din tid →</a>
+    </div>
+  </section>
+
+  <!-- ─── TREATMENTS ─── -->
+  <section id="treatments">
+    <span class="section-eyebrow reveal" data-i18n="treatments.eyebrow">Tjänster</span>
+    <h2 class="section-title reveal" data-i18n="treatments.title">Behandlingar &amp; PT</h2>
+    <p class="section-intro reveal" data-i18n="treatments.intro">Oavsett om du söker återhämtning, skadeförebyggande eller vill ta din träning till nästa nivå — här hittar du rätt behandling för dig.</p>
+
+    <div class="card-grid">
+      <div class="card reveal">
+        <h3 class="card__name" data-i18n="t1.name">Klassisk Massage</h3>
+        <p class="card__desc" data-i18n="t1.desc">Helkroppsmassage som löser spänningar och förbättrar cirkulationen.</p>
+        <div class="card__tags">
+          <span class="tag" data-i18n="t1.dur">60 min</span>
+          <span class="tag" data-i18n="t1.price">850 kr</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 class="card__name" data-i18n="t2.name">Sportmassage</h3>
+        <p class="card__desc" data-i18n="t2.desc">Anpassad för aktiva — förebygger skador och påskyndar återhämtning.</p>
+        <div class="card__tags">
+          <span class="tag" data-i18n="t2.dur">60 min</span>
+          <span class="tag" data-i18n="t2.price">950 kr</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 class="card__name" data-i18n="t3.name">Personal Training</h3>
+        <p class="card__desc" data-i18n="t3.desc">Individanpassad träning med fokus på teknik, styrka och rörlighet.</p>
+        <div class="card__tags">
+          <span class="tag" data-i18n="t3.dur">60 min</span>
+          <span class="tag" data-i18n="t3.price">1 100 kr</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 class="card__name" data-i18n="t4.name">PT-Paket 10x</h3>
+        <p class="card__desc" data-i18n="t4.desc">Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning.</p>
+        <div class="card__tags">
+          <span class="tag" data-i18n="t4.dur">10 ggr</span>
+          <span class="tag" data-i18n="t4.price">9 500 kr</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT ─── -->
+  <section id="about">
+    <span class="section-eyebrow reveal" data-i18n="about.eyebrow">Om mig</span>
+    <div class="about__grid">
+      <div class="about__photo reveal" role="img" aria-label="Foto av Magnus Gies Melin"></div>
+      <div class="reveal">
+        <h2 class="section-title" data-i18n="about.name">Magnus Gies Melin</h2>
+        <p class="about__role" data-i18n="about.role">Massageterapeut &amp; Personlig Tränare</p>
+        <p class="about__bio" data-i18n="about.bio">Med över tio års erfarenhet inom massage och personlig träning har jag hjälpt hundratals klienter att hitta balansen mellan prestation och återhämtning. Min filosofi är enkel: lyssna på kroppen, arbeta smart och bygg vanor som håller livet ut. Oavsett om du är elitidrottare eller nybörjare är du välkommen här.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT ─── -->
+  <section id="contact">
+    <span class="section-eyebrow reveal" data-i18n="contact.eyebrow">Kontakt</span>
+    <h2 class="section-title reveal" data-i18n="contact.title">Undrar du över något?</h2>
+    <div class="contact__grid">
+      <div class="reveal">
+        <div class="contact__item">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+          <span data-i18n="contact.address">Sveavägen 42, 113 59 Stockholm</span>
+        </div>
+        <div class="contact__item">
+          <i class="ti ti-phone" aria-hidden="true"></i>
+          <span data-i18n="contact.phone">08-123 456 78</span>
+        </div>
+        <div class="contact__item">
+          <i class="ti ti-mail" aria-hidden="true"></i>
+          <span data-i18n="contact.email">hej@studioname.se</span>
+        </div>
+      </div>
+      <div class="reveal">
+        <form id="contactForm" name="contact" data-netlify="true">
+          <input type="hidden" name="form-name" value="contact" />
+
+          <label for="field-name" class="visually-hidden" data-i18n-label="form.name">Namn</label>
+          <input id="field-name" class="form-field" type="text" name="name" data-i18n-placeholder="form.name" placeholder="Namn" required />
+
+          <label for="field-email" class="visually-hidden" data-i18n-label="form.email">E-post</label>
+          <input id="field-email" class="form-field" type="email" name="email" data-i18n-placeholder="form.email" placeholder="E-post" required />
+
+          <label for="field-message" class="visually-hidden" data-i18n-label="form.message">Meddelande</label>
+          <textarea id="field-message" class="form-field" name="message" data-i18n-placeholder="form.message" placeholder="Meddelande" required></textarea>
+
+          <button type="submit" class="btn-submit" data-i18n="form.submit">Skicka</button>
+        </form>
+        <div class="form-thanks" id="formThanks" role="status">
+          <span data-i18n="form.thanks">Tack! Vi återkommer så snart vi kan.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <span class="footer__name">Magnus</span>
+  <span class="footer__copy" data-i18n="footer.copy">© 2026 · Alla rättigheter förbehållna</span>
+</footer>
+
+<script>
+  // ─── i18n ───
+  const strings = {
+    sv: {
+      'nav.subtitle': 'Massageterapi',
+      'nav.treatments': 'Behandlingar',
+      'nav.pt': 'PT',
+      'nav.about': 'Om mig',
+      'nav.contact': 'Kontakt',
+      'nav.boka': 'Boka',
+      'menu.label': 'Meny',
+      'menu.close': 'Stäng',
+      'hero.eyebrow': 'Östra Sorgenfri · Malmö',
+      'hero.line1': 'Massage &',
+      'hero.line2': 'Träning',
+      'hero.sub': 'För att kunna slappna av, röra sig utan smärta och må bra.',
+      'hero.cta': 'Boka din tid →',
+      'treatments.eyebrow': 'Tjänster',
+      'treatments.title': 'Behandlingar & PT',
+      'treatments.intro': 'Du är välkommen på en avslappningsbehandling eller om du har någon specifik smärta som du vill ha hjälp med. Då gör vi en bedömning efter samtal och eventuella ortopediska tester och kommer fram till passande behandling. Jag erbjuder svensk klassisk massage, avslappningsmassage, deep tissue-massage, triggerpunktsbehandling, terapeutisk muskeltöjning, lotorpsmassage, fibromassage och träningsövningar.',
+      't1.name': 'Klassisk Massage',
+      't1.desc': 'Helkroppsmassage som löser spänningar och förbättrar cirkulationen.',
+      't1.dur': '60 min',
+      't1.price': '850 kr',
+      't2.name': 'Sportmassage',
+      't2.desc': 'Anpassad för aktiva — förebygger skador och påskyndar återhämtning.',
+      't2.dur': '60 min',
+      't2.price': '950 kr',
+      't3.name': 'Personal Training',
+      't3.desc': 'Individanpassad träning med fokus på teknik, styrka och rörlighet.',
+      't3.dur': '60 min',
+      't3.price': '1 100 kr',
+      't4.name': 'PT-Paket 10x',
+      't4.desc': 'Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning.',
+      't4.dur': '10 ggr',
+      't4.price': '9 500 kr',
+      'about.eyebrow': 'Om mig',
+      'about.name': 'Magnus Gies Melin',
+      'about.role': 'Massageterapeut & Personlig Tränare',
+      'about.bio': 'Jag heter Magnus Gies Melin och är utbildad medicinsk massageterapeut. Det är en 2-årig YH utbildning i massage, anatomi, ortopediska tester, träning och coachande samtal. Jag har själv lidit av smärta vid rörelse så det har varit väldigt givande att öka förståelsen i hur avslappning och träning kan hjälpa kroppen att röra sig utan att det gör ont.',
+      'contact.eyebrow': 'Kontakt',
+      'contact.title': 'Undrar du över något?',
+      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
+      'contact.phone': '08-123 456 78',
+      'contact.email': 'hej@studioname.se',
+      'form.name': 'Namn',
+      'form.email': 'E-post',
+      'form.message': 'Meddelande',
+      'form.submit': 'Skicka',
+      'form.thanks': 'Tack! Vi återkommer så snart vi kan.',
+      'footer.copy': '© 2026 · Alla rättigheter förbehållna',
+    },
+    en: {
+      'nav.subtitle': 'Massage Therapy',
+      'nav.treatments': 'Treatments',
+      'nav.pt': 'PT',
+      'nav.about': 'About',
+      'nav.contact': 'Contact',
+      'nav.boka': 'Book',
+      'menu.label': 'Menu',
+      'menu.close': 'Close',
+      'hero.eyebrow': 'Östra Sorgenfri · Malmö',
+      'hero.line1': 'Massage &',
+      'hero.line2': 'Training',
+      'hero.sub': 'To relax and feel good.',
+      'hero.cta': 'Book your time →',
+      'treatments.eyebrow': 'Services',
+      'treatments.title': 'Our Treatments',
+      'treatments.intro': 'You are welcome for a relaxation treatment, or if you have a specific pain you would like help with. We then make an assessment based on a conversation and any orthopaedic tests, and find the right treatment for you. I offer Swedish classic massage, relaxation massage, deep tissue massage, trigger point therapy, therapeutic muscle stretching, Lotorp massage, fibre massage and exercise programmes.',
+      't1.name': 'Classic Massage',
+      't1.desc': 'Full-body massage that releases tension and improves circulation.',
+      't1.dur': '60 min',
+      't1.price': '850 SEK',
+      't2.name': 'Sports Massage',
+      't2.desc': 'Tailored for active people — prevents injuries and speeds up recovery.',
+      't2.dur': '60 min',
+      't2.price': '950 SEK',
+      't3.name': 'Personal Training',
+      't3.desc': 'Individually adapted training with a focus on technique, strength and mobility.',
+      't3.dur': '60 min',
+      't3.price': '1 100 SEK',
+      't4.name': 'PT Package 10x',
+      't4.desc': 'Ten sessions with ongoing follow-up, training programme and nutritional advice.',
+      't4.dur': '10 sessions',
+      't4.price': '9 500 SEK',
+      'about.eyebrow': 'About me',
+      'about.name': 'Magnus Gies Melin',
+      'about.role': 'Massage Therapist & Personal Trainer',
+      'about.bio': 'My name is Magnus Gies Melin and I am a trained medical massage therapist. It is a 2-year vocational higher education in massage, anatomy, orthopaedic tests, training and coaching conversations. I have myself suffered from pain during movement, so it has been very rewarding to increase my understanding of how relaxation and training can help the body move without pain.',
+      'contact.eyebrow': 'Contact',
+      'contact.title': 'Get in touch',
+      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
+      'contact.phone': '08-123 456 78',
+      'contact.email': 'hej@studioname.se',
+      'form.name': 'Name',
+      'form.email': 'Email',
+      'form.message': 'Message',
+      'form.submit': 'Send',
+      'form.thanks': 'Thanks! We\'ll get back to you soon.',
+      'footer.copy': '© 2026 · All rights reserved',
+    },
+    es: {
+      'nav.subtitle': 'Masoterapia',
+      'nav.treatments': 'Tratamientos',
+      'nav.pt': 'PT',
+      'nav.about': 'Sobre mí',
+      'nav.contact': 'Contacto',
+      'nav.boka': 'Reservar',
+      'menu.label': 'Menú',
+      'menu.close': 'Cerrar',
+      'hero.eyebrow': 'Östra Sorgenfri · Malmö',
+      'hero.line1': 'Masaje &',
+      'hero.line2': 'Entrenamiento',
+      'hero.sub': 'Para relajarse, moverse sin dolor y sentirse bien.',
+      'hero.cta': 'Reserva tu hora →',
+      'treatments.eyebrow': 'Servicios',
+      'treatments.title': 'Tratamientos & PT',
+      'treatments.intro': 'Eres bienvenido a un tratamiento de relajación, o si tienes algún dolor específico con el que quieras ayuda. Entonces hacemos una valoración mediante una conversación y posibles pruebas ortopédicas, y encontramos el tratamiento adecuado para ti. Ofrezco masaje clásico sueco, masaje de relajación, masaje de tejido profundo, terapia de puntos gatillo, estiramiento muscular terapéutico, masaje Lotorp, fibromassage y programas de ejercicios.',
+      't1.name': 'Masaje Clásico',
+      't1.desc': 'Masaje de cuerpo completo que libera tensiones y mejora la circulación.',
+      't1.dur': '60 min',
+      't1.price': '850 SEK',
+      't2.name': 'Masaje Deportivo',
+      't2.desc': 'Adaptado para personas activas — previene lesiones y acelera la recuperación.',
+      't2.dur': '60 min',
+      't2.price': '950 SEK',
+      't3.name': 'Entrenamiento Personal',
+      't3.desc': 'Entrenamiento personalizado con enfoque en técnica, fuerza y movilidad.',
+      't3.dur': '60 min',
+      't3.price': '1 100 SEK',
+      't4.name': 'Paquete PT 10x',
+      't4.desc': 'Diez sesiones con seguimiento continuo, programa de entrenamiento y asesoramiento nutricional.',
+      't4.dur': '10 sesiones',
+      't4.price': '9 500 SEK',
+      'about.eyebrow': 'Sobre mí',
+      'about.name': 'Magnus Gies Melin',
+      'about.role': 'Masajista & Entrenador Personal',
+      'about.bio': 'Me llamo Magnus Gies Melin y soy masajista médico titulado. Es una formación de 2 años en masaje, anatomía, pruebas ortopédicas, entrenamiento y conversaciones de coaching. Yo mismo he sufrido dolor al moverme, por lo que ha sido muy gratificante aumentar mi comprensión de cómo la relajación y el entrenamiento pueden ayudar al cuerpo a moverse sin dolor.',
+      'contact.eyebrow': 'Contacto',
+      'contact.title': '¿Tienes alguna pregunta?',
+      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
+      'contact.phone': '08-123 456 78',
+      'contact.email': 'hej@studioname.se',
+      'form.name': 'Nombre',
+      'form.email': 'Correo electrónico',
+      'form.message': 'Mensaje',
+      'form.submit': 'Enviar',
+      'form.thanks': '¡Gracias! Te responderemos lo antes posible.',
+      'footer.copy': '© 2026 · Todos los derechos reservados',
+    }
+  };
+
+  let currentLang = localStorage.getItem('lang') || 'sv';
+
+  function applyLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (strings[lang][key] !== undefined) {
+        el.innerHTML = strings[lang][key];
+      }
+    });
+
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      if (strings[lang][key] !== undefined) {
+        el.placeholder = strings[lang][key];
+      }
+    });
+
+    // Update visually-hidden labels
+    document.querySelectorAll('[data-i18n-label]').forEach(el => {
+      const key = el.dataset.i18nLabel;
+      if (strings[lang][key] !== undefined) {
+        el.textContent = strings[lang][key];
+      }
+    });
+
+    // Update form thanks if visible
+    const thanks = document.getElementById('formThanks');
+    if (thanks.style.display === 'block') {
+      thanks.querySelector('[data-i18n]').innerHTML = strings[lang]['form.thanks'];
+    }
+  }
+
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+  });
+
+  applyLang(currentLang);
+
+  // ─── NAVBAR SCROLL ───
+  const navbar = document.getElementById('navbar');
+  const hero = document.getElementById('home');
+
+  function onScroll() {
+    if (window.scrollY >= hero.offsetHeight - 56) {
+      navbar.classList.add('nav--scrolled');
+    } else {
+      navbar.classList.remove('nav--scrolled');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ─── MOBILE MENU ───
+  const mobileMenu = document.getElementById('mobileMenu');
+  const hamburger = document.getElementById('hamburger');
+  const menuOverlay = document.getElementById('menuOverlay');
+  const menuClose = document.getElementById('menuClose');
+
+  function openMenu() {
+    mobileMenu.classList.add('is-open');
+    mobileMenu.removeAttribute('aria-hidden');
+    document.body.classList.add('menu-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    hamburger.setAttribute('aria-label', 'Stäng meny');
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.remove('is-open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('menu-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Öppna meny');
+  }
+
+  hamburger.addEventListener('click', openMenu);
+  menuOverlay.addEventListener('click', closeMenu);
+  menuClose.addEventListener('click', closeMenu);
+
+  document.querySelectorAll('.menu-link').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // ─── CONTACT FORM ───
+  const form = document.getElementById('contactForm');
+  const formThanks = document.getElementById('formThanks');
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = new FormData(form);
+
+    try {
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data).toString(),
+      });
+    } catch (_) {
+      // Netlify handles this at the edge; proceed to show thanks regardless
+    }
+
+    form.style.display = 'none';
+    formThanks.style.display = 'block';
+    // Re-apply current lang to the thanks message
+    formThanks.querySelector('[data-i18n]').innerHTML = strings[currentLang]['form.thanks'];
+  });
+
+  // ─── SCROLL ANIMATIONS ───
+  // Respect prefers-reduced-motion
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const revealEls = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    // Stagger cards
+    let cardDelay = 0;
+    revealEls.forEach(el => {
+      if (el.classList.contains('card')) {
+        el.style.transitionDelay = cardDelay + 'ms';
+        cardDelay += 80;
+      } else {
+        cardDelay = 0;
+      }
+      observer.observe(el);
+    });
+  } else {
+    // Skip animations — make all reveal elements immediately visible
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  }
+</script>
+</body>
+</html>
