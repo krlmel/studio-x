@@ -980,7 +980,7 @@
         </div>
       </div>
       <div class="reveal">
-        <form id="contactForm" name="contact" data-netlify="true">
+        <form id="contactForm" name="contact" method="POST" data-netlify="true">
           <input type="hidden" name="form-name" value="contact" />
 
           <label for="field-name" class="form-label" data-i18n="form.name">Namn</label>
@@ -1279,18 +1279,18 @@
     const data = new FormData(form);
 
     try {
-      await fetch('/', {
+      const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(data).toString(),
       });
-    } catch (_) {
-      // Netlify handles this at the edge; proceed to show thanks regardless
+      if (!response.ok) throw new Error('Network response was not ok');
+    } catch (err) {
+      console.error('Form submission error:', err);
     }
 
     form.style.display = 'none';
     formThanks.style.display = 'block';
-    // Re-apply current lang to the thanks message
     formThanks.querySelector('[data-i18n]').innerHTML = strings[currentLang]['form.thanks'];
   });
 
