@@ -124,7 +124,7 @@
     .nav__links a {
       font-family: 'DM Sans', sans-serif;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text);
@@ -132,7 +132,7 @@
       opacity: 1;
       transition: opacity 0.2s;
     }
-    .nav__links a:hover { opacity: 1; }
+    .nav__links a:hover { color: var(--accent); }
 
     .lang-switcher {
       display: flex;
@@ -374,8 +374,8 @@
       font-family: 'DM Sans', sans-serif;
       text-transform: uppercase;
       border-radius: 20px;
-      padding: 12px 28px;
-      font-size: 13px;
+      padding: 8px 18px;
+      font-size: 14px;
       letter-spacing: 0.1em;
       text-decoration: none;
       transition: opacity 0.2s;
@@ -544,10 +544,11 @@
     }
 
     .about__photo {
-      background: #d8d4c8;
-      border: 1px solid var(--cream-label);
-      border-radius: 12px;
-      height: 320px;
+      border: none;
+      border-radius: 0;
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     .about__role {
@@ -611,21 +612,30 @@
       border: 0;
     }
 
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: 0.03em;
+    }
+
     .form-field {
       width: 100%;
-      background: rgba(255,255,255,0.05);
+      background: var(--cream);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: 8px;
       padding: 10px 14px;
-      color: var(--text);
+      color: var(--cream-heading);
       font-size: 14px;
       font-family: 'DM Sans', sans-serif;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
       outline: none;
       transition: border-color 0.2s;
     }
-    .form-field::placeholder { color: rgba(255,255,255,0.25); }
-    .form-field:focus { border-color: rgba(200,242,48,0.35); }
+    .form-field::placeholder { color: var(--cream-body); }
+    .form-field:focus { border-color: rgba(200,242,48,0.5); }
 
     textarea.form-field { height: 100px; resize: vertical; }
 
@@ -707,7 +717,6 @@
         grid-template-columns: 1fr;
         gap: 24px;
       }
-      .about__photo { height: 240px; }
 
       .contact__grid { grid-template-columns: 1fr; gap: 32px; }
 
@@ -851,7 +860,7 @@
   <section id="about">
     <span class="section-eyebrow reveal" data-i18n="about.eyebrow">Om mig</span>
     <div class="about__grid">
-      <div class="about__photo reveal" role="img" aria-label="Foto av Magnus Gies Melin"></div>
+      <img src="profil.jpg" alt="Foto av Magnus Gies Melin" class="about__photo reveal" />
       <div class="reveal">
         <h2 class="section-title" data-i18n="about.name">Magnus Gies Melin</h2>
         <p class="about__role" data-i18n="about.role">Massageterapeut &amp; Personlig Tränare</p>
@@ -868,29 +877,29 @@
       <div class="reveal">
         <div class="contact__item">
           <i class="ti ti-map-pin" aria-hidden="true"></i>
-          <span data-i18n="contact.address">Sveavägen 42, 113 59 Stockholm</span>
+          <span data-i18n="contact.address">Köpenhamnsvägen 43, 217 71 Malmö.<br>För tillfället hyr jag in mig hos Kiropraktik &amp; Rehab.</span>
         </div>
         <div class="contact__item">
-          <i class="ti ti-phone" aria-hidden="true"></i>
-          <span data-i18n="contact.phone">08-123 456 78</span>
+          <i class="ti ti-home" aria-hidden="true"></i>
+          <span data-i18n="contact.homevisit">I Malmö kan jag även komma på hembesök för behandlingar. Skicka en förfrågan i formuläret.</span>
         </div>
         <div class="contact__item">
           <i class="ti ti-mail" aria-hidden="true"></i>
-          <span data-i18n="contact.email">hej@studioname.se</span>
+          <span data-i18n="contact.email">magnusmassageterapi@gmail.com</span>
         </div>
       </div>
       <div class="reveal">
         <form id="contactForm" name="contact" data-netlify="true">
           <input type="hidden" name="form-name" value="contact" />
 
-          <label for="field-name" class="visually-hidden" data-i18n-label="form.name">Namn</label>
-          <input id="field-name" class="form-field" type="text" name="name" data-i18n-placeholder="form.name" placeholder="Namn" required />
+          <label for="field-name" class="form-label" data-i18n="form.name">Namn</label>
+          <input id="field-name" class="form-field" type="text" name="name" required />
 
-          <label for="field-email" class="visually-hidden" data-i18n-label="form.email">E-post</label>
-          <input id="field-email" class="form-field" type="email" name="email" data-i18n-placeholder="form.email" placeholder="E-post" required />
+          <label for="field-email" class="form-label" data-i18n="form.email">E-post</label>
+          <input id="field-email" class="form-field" type="email" name="email" required />
 
-          <label for="field-message" class="visually-hidden" data-i18n-label="form.message">Meddelande</label>
-          <textarea id="field-message" class="form-field" name="message" data-i18n-placeholder="form.message" placeholder="Meddelande" required></textarea>
+          <label for="field-message" class="form-label" data-i18n="form.message">Meddelande</label>
+          <textarea id="field-message" class="form-field" name="message" required></textarea>
 
           <button type="submit" class="btn-submit" data-i18n="form.submit">Skicka</button>
         </form>
@@ -905,7 +914,10 @@
 
 <!-- ─── FOOTER ─── -->
 <footer>
-  <span class="footer__name">Magnus</span>
+  <a href="#home" class="nav__logo" style="text-decoration:none;">
+    <span class="nav__logo-name">Magnus</span>
+    <span class="nav__logo-sub">Massageterapi</span>
+  </a>
   <span class="footer__copy" data-i18n="footer.copy">© 2026 · Alla rättigheter förbehållna</span>
 </footer>
 
@@ -951,9 +963,9 @@
       'about.bio': 'Jag heter Magnus Gies Melin och är utbildad medicinsk massageterapeut. Det är en 2-årig YH utbildning i massage, anatomi, ortopediska tester, träning och coachande samtal. Jag har själv lidit av smärta vid rörelse så det har varit väldigt givande att öka förståelsen i hur avslappning och träning kan hjälpa kroppen att röra sig utan att det gör ont.',
       'contact.eyebrow': 'Kontakt',
       'contact.title': 'Undrar du över något?',
-      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
-      'contact.phone': '08-123 456 78',
-      'contact.email': 'hej@studioname.se',
+      'contact.address': 'Köpenhamnsvägen 43, 217 71 Malmö.<br>För tillfället hyr jag in mig hos Kiropraktik &amp; Rehab.',
+      'contact.homevisit': 'I Malmö kan jag även komma på hembesök för behandlingar. Skicka en förfrågan i formuläret.',
+      'contact.email': 'magnusmassageterapi@gmail.com',
       'form.name': 'Namn',
       'form.email': 'E-post',
       'form.message': 'Meddelande',
@@ -1000,9 +1012,9 @@
       'about.bio': 'My name is Magnus Gies Melin and I am a trained medical massage therapist. It is a 2-year vocational higher education in massage, anatomy, orthopaedic tests, training and coaching conversations. I have myself suffered from pain during movement, so it has been very rewarding to increase my understanding of how relaxation and training can help the body move without pain.',
       'contact.eyebrow': 'Contact',
       'contact.title': 'Get in touch',
-      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
-      'contact.phone': '08-123 456 78',
-      'contact.email': 'hej@studioname.se',
+      'contact.address': 'Köpenhamnsvägen 43, 217 71 Malmö.<br>Currently renting a space at Kiropraktik &amp; Rehab.',
+      'contact.homevisit': 'In Malmö I can also come to your home for treatments. Send a request via the form.',
+      'contact.email': 'magnusmassageterapi@gmail.com',
       'form.name': 'Name',
       'form.email': 'Email',
       'form.message': 'Message',
@@ -1049,9 +1061,9 @@
       'about.bio': 'Me llamo Magnus Gies Melin y soy masajista médico titulado. Es una formación de 2 años en masaje, anatomía, pruebas ortopédicas, entrenamiento y conversaciones de coaching. Yo mismo he sufrido dolor al moverme, por lo que ha sido muy gratificante aumentar mi comprensión de cómo la relajación y el entrenamiento pueden ayudar al cuerpo a moverse sin dolor.',
       'contact.eyebrow': 'Contacto',
       'contact.title': '¿Tienes alguna pregunta?',
-      'contact.address': 'Sveavägen 42, 113 59 Stockholm',
-      'contact.phone': '08-123 456 78',
-      'contact.email': 'hej@studioname.se',
+      'contact.address': 'Köpenhamnsvägen 43, 217 71 Malmö.<br>Actualmente alquilo espacio en Kiropraktik &amp; Rehab.',
+      'contact.homevisit': 'En Malmö también puedo ir a domicilio para tratamientos. Envía una solicitud a través del formulario.',
+      'contact.email': 'magnusmassageterapi@gmail.com',
       'form.name': 'Nombre',
       'form.email': 'Correo electrónico',
       'form.message': 'Mensaje',
