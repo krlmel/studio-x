@@ -496,7 +496,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 8px;
       margin-top: auto;
+    }
+
+    .card__prices {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .card__book-btn {
@@ -821,38 +828,122 @@
     </div>
 
     <div class="card-grid">
+
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
-        <h3 class="card__name" data-i18n="t1.name">Klassisk Massage</h3>
-        <p class="card__desc" data-i18n="t1.desc">Helkroppsmassage som löser spänningar och förbättrar cirkulationen. Jag arbetar med svensk klassisk teknik som mjukar upp muskler, ökar blodflödet och ger djup avslappning i hela kroppen.</p>
+        <h3 class="card__name" data-i18n="t1.name">Svensk klassisk massage</h3>
+        <p class="card__desc" data-i18n="t1.desc">Används för att behandla muskelspänningar, förbättra cirkulationen och skapa ökat välbefinnande.</p>
         <div class="card__footer">
-          <a href="#contact" class="card__book-btn"><span data-i18n="t1.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t1.price">850 kr</span></a>
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+            <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
+          </div>
           <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
+
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
-        <h3 class="card__name" data-i18n="t2.name">Sportmassage</h3>
-        <p class="card__desc" data-i18n="t2.desc">Anpassad för aktiva — förebygger skador och påskyndar återhämtning. Behandlingen fokuserar på de muskelgrupper du belastar mest i din träning och hjälper kroppen återhämta sig snabbare.</p>
+        <h3 class="card__name" data-i18n="t2.name">Medicinsk massageterapi</h3>
+        <p class="card__desc" data-i18n="t2.desc">Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen. Utifrån det föreslår jag en behandling — avslappningsmassage, deep tissue-massage, triggerpunktsbehandling eller ofta en kombination. Jag lyssnar och anpassar efter dina behov vad gäller tryck och hastighet.</p>
         <div class="card__footer">
-          <a href="#contact" class="card__book-btn"><span data-i18n="t2.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t2.price">950 kr</span></a>
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">Nybesök 45 min · 850 kr</a>
+          </div>
           <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
+
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
-        <h3 class="card__name" data-i18n="t3.name">Personal Training</h3>
-        <p class="card__desc" data-i18n="t3.desc">Individanpassad träning med fokus på teknik, styrka och rörlighet. Vi utgår från dina mål och din nuvarande nivå och bygger ett program som ger resultat utan att slita ut kroppen.</p>
+        <h3 class="card__name" data-i18n="t3.name">Avslappningsmassage</h3>
+        <p class="card__desc" data-i18n="t3.desc">En massage där du bara får vara, med eller utan musik. Ta med din egen musik om du vill.</p>
         <div class="card__footer">
-          <a href="#contact" class="card__book-btn"><span data-i18n="t3.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t3.price">1 100 kr</span></a>
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+            <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
+          </div>
           <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
+
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
-        <h3 class="card__name" data-i18n="t4.name">PT-Paket 10x</h3>
-        <p class="card__desc" data-i18n="t4.desc">Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning. Paketet är utformat för dig som vill se verklig förändring och behöver struktur och stöd under en längre period.</p>
+        <h3 class="card__name" data-i18n="t4.name">Fibromassage</h3>
+        <p class="card__desc" data-i18n="t4.desc">Fibromassage® är en speciellt anpassad, mycket mild massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi. Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.</p>
         <div class="card__footer">
-          <a href="#contact" class="card__book-btn"><span data-i18n="t4.dur">10 ggr</span>&nbsp;·&nbsp;<span data-i18n="t4.price">9 500 kr</span></a>
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">75 min · 1 100 kr</a>
+          </div>
           <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t5.name">Andningsmassage</h3>
+        <p class="card__desc" data-i18n="t5.desc">Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem — hosta, doft- och parfymallergi, astmaliknande åkommor samt KOL. En del av behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är guidning till rätt andningsmönster.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+            <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t6.name">Fingerartrosmassage</h3>
+        <p class="card__desc" data-i18n="t6.desc">För dig med fingerartros ger denna behandling ökad cirkulation — fingrarna känns rörligare och varmare. Behandlingen upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut, eller så hittar vi passande övningar tillsammans.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">20 min · 500 kr</a>
+            <a href="#contact" class="card__book-btn">3×20 min · 1 200 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t7.name">Lymfmassage</h3>
+        <p class="card__desc" data-i18n="t7.desc">En mild massage med konsekventa strykningar i lymfflödets riktning mot lymfnoderna, kompletterad med rörelser som stimulerar lymfflödet. Den milda tekniken gör att du kan slappna av helt, vilket i sig hjälper lymfcirkulationen.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t8.name">Koppning</h3>
+        <p class="card__desc" data-i18n="t8.desc">Koppningen skapar ett undertryck som kan lätta på spänningar i stela områden. Jag använder det utifrån mina anatomiska kunskaper och erfarenhet som medicinsk massageterapeut och finner det effektivt vid rätt tillfälle.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t9.name">Personlig träning utomhus</h3>
+        <p class="card__desc" data-i18n="t9.desc">Utifrån dina mål och rörelsetester skräddarsyr vi ett träningsprogram för dig — ökat rörelseomfång, ökad stabilitet eller rehabilitering av skador. Programmet kan anpassas för kroppsvikt, gummiband, kettlebells eller ett utomhusgym nära dig.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+            <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
+        <h3 class="card__name" data-i18n="t10.name">Migrän &amp; huvudvärk</h3>
+        <p class="card__desc" data-i18n="t10.desc">Kopplat till migrän finns ofta stela muskler i nacke och ansikte där massage kan minska symtomen. För dig med spänningshuvudvärk eller migrän kan behandlingen lindra besvären genom att lösa upp aktiva triggerpunkter. Har du kraftiga spänningar kan det kännas intensivare dagen efter, innan det lättar.</p>
+        <div class="card__footer">
+          <div class="card__prices">
+            <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
+          </div>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -941,22 +1032,26 @@
       'treatments.eyebrow': 'Tjänster',
       'treatments.title': 'Behandlingar & PT',
       'treatments.intro': 'Du är välkommen på en avslappningsbehandling eller om du har någon specifik smärta som du vill ha hjälp med. Då gör vi en bedömning efter samtal och eventuella ortopediska tester och kommer fram till passande behandling. Jag erbjuder svensk klassisk massage, avslappningsmassage, deep tissue-massage, triggerpunktsbehandling, terapeutisk muskeltöjning, lotorpsmassage, fibromassage och träningsövningar.',
-      't1.name': 'Klassisk Massage',
-      't1.desc': 'Helkroppsmassage som löser spänningar och förbättrar cirkulationen. Jag arbetar med svensk klassisk teknik som mjukar upp muskler, ökar blodflödet och ger djup avslappning i hela kroppen.',
-      't1.dur': '60 min',
-      't1.price': '850 kr',
-      't2.name': 'Sportmassage',
-      't2.desc': 'Anpassad för aktiva — förebygger skador och påskyndar återhämtning. Behandlingen fokuserar på de muskelgrupper du belastar mest i din träning och hjälper kroppen återhämta sig snabbare.',
-      't2.dur': '60 min',
-      't2.price': '950 kr',
-      't3.name': 'Personal Training',
-      't3.desc': 'Individanpassad träning med fokus på teknik, styrka och rörlighet. Vi utgår från dina mål och din nuvarande nivå och bygger ett program som ger resultat utan att slita ut kroppen.',
-      't3.dur': '60 min',
-      't3.price': '1 100 kr',
-      't4.name': 'PT-Paket 10x',
-      't4.desc': 'Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning. Paketet är utformat för dig som vill se verklig förändring och behöver struktur och stöd under en längre period.',
-      't4.dur': '10 ggr',
-      't4.price': '9 500 kr',
+      't1.name': 'Svensk klassisk massage',
+      't1.desc': 'Används för att behandla muskelspänningar, förbättra cirkulationen och skapa ökat välbefinnande.',
+      't2.name': 'Medicinsk massageterapi',
+      't2.desc': 'Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen. Utifrån det föreslår jag en behandling — avslappningsmassage, deep tissue-massage, triggerpunktsbehandling eller ofta en kombination. Jag lyssnar och anpassar efter dina behov vad gäller tryck och hastighet.',
+      't3.name': 'Avslappningsmassage',
+      't3.desc': 'En massage där du bara får vara, med eller utan musik. Ta med din egen musik om du vill.',
+      't4.name': 'Fibromassage',
+      't4.desc': 'Fibromassage® är en speciellt anpassad, mycket mild massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi. Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.',
+      't5.name': 'Andningsmassage',
+      't5.desc': 'Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem — hosta, doft- och parfymallergi, astmaliknande åkommor samt KOL. En del av behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är guidning till rätt andningsmönster.',
+      't6.name': 'Fingerartrosmassage',
+      't6.desc': 'För dig med fingerartros ger denna behandling ökad cirkulation — fingrarna känns rörligare och varmare. Behandlingen upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut, eller så hittar vi passande övningar tillsammans.',
+      't7.name': 'Lymfmassage',
+      't7.desc': 'En mild massage med konsekventa strykningar i lymfflödets riktning mot lymfnoderna, kompletterad med rörelser som stimulerar lymfflödet. Den milda tekniken gör att du kan slappna av helt, vilket i sig hjälper lymfcirkulationen.',
+      't8.name': 'Koppning',
+      't8.desc': 'Koppningen skapar ett undertryck som kan lätta på spänningar i stela områden. Jag använder det utifrån mina anatomiska kunskaper och erfarenhet som medicinsk massageterapeut och finner det effektivt vid rätt tillfälle.',
+      't9.name': 'Personlig träning utomhus',
+      't9.desc': 'Utifrån dina mål och rörelsetester skräddarsyr vi ett träningsprogram för dig — ökat rörelseomfång, ökad stabilitet eller rehabilitering av skador. Programmet kan anpassas för kroppsvikt, gummiband, kettlebells eller ett utomhusgym nära dig.',
+      't10.name': 'Migrän & huvudvärk',
+      't10.desc': 'Kopplat till migrän finns ofta stela muskler i nacke och ansikte där massage kan minska symtomen. För dig med spänningshuvudvärk eller migrän kan behandlingen lindra besvären genom att lösa upp aktiva triggerpunkter. Har du kraftiga spänningar kan det kännas intensivare dagen efter, innan det lättar.',
       'about.eyebrow': 'Om mig',
       'about.name': 'Magnus Gies Melin',
       'about.role': 'Massageterapeut & Personlig Tränare',
@@ -990,22 +1085,26 @@
       'treatments.eyebrow': 'Services',
       'treatments.title': 'Our Treatments',
       'treatments.intro': 'You are welcome for a relaxation treatment, or if you have a specific pain you would like help with. We then make an assessment based on a conversation and any orthopaedic tests, and find the right treatment for you. I offer Swedish classic massage, relaxation massage, deep tissue massage, trigger point therapy, therapeutic muscle stretching, Lotorp massage, fibre massage and exercise programmes.',
-      't1.name': 'Classic Massage',
-      't1.desc': 'Full-body massage that releases tension and improves circulation.',
-      't1.dur': '60 min',
-      't1.price': '850 SEK',
-      't2.name': 'Sports Massage',
-      't2.desc': 'Tailored for active people — prevents injuries and speeds up recovery.',
-      't2.dur': '60 min',
-      't2.price': '950 SEK',
-      't3.name': 'Personal Training',
-      't3.desc': 'Individually adapted training with a focus on technique, strength and mobility.',
-      't3.dur': '60 min',
-      't3.price': '1 100 SEK',
-      't4.name': 'PT Package 10x',
-      't4.desc': 'Ten sessions with ongoing follow-up, training programme and nutritional advice.',
-      't4.dur': '10 sessions',
-      't4.price': '9 500 SEK',
+      't1.name': 'Swedish Classic Massage',
+      't1.desc': 'Used to treat muscle tension, improve circulation and create increased wellbeing.',
+      't2.name': 'Medical Massage Therapy',
+      't2.desc': 'We start with a discussion about your issue, then a movement analysis if needed. Based on that I suggest a treatment — relaxation massage, deep tissue, trigger point therapy or a combination. I listen and adapt the pressure and pace to your needs.',
+      't3.name': 'Relaxation Massage',
+      't3.desc': 'A massage where you just get to be, with or without music. Bring your own music if you like.',
+      't4.name': 'Fibromassage',
+      't4.desc': 'Fibromassage® is a specially adapted, very gentle massage method developed to help patients with chronic pain such as fibromyalgia. It is a full-body massage using a heat pad and music to promote deep relaxation.',
+      't5.name': 'Breathing Massage',
+      't5.desc': 'The Lotorp Method is a highly effective method for treating breathing problems — cough, fragrance allergy, asthma-like conditions and COPD. Treatment includes massage of the diaphragm and accessory breathing muscles, plus guidance to find the right breathing pattern.',
+      't6.name': 'Finger Arthritis Massage',
+      't6.desc': 'For those with finger arthritis, this treatment increases circulation — fingers feel more mobile and warmer. The treatment is ideally repeated weekly. Bring your physiotherapist exercises or we can find suitable ones together.',
+      't7.name': 'Lymph Massage',
+      't7.desc': 'A gentle massage with consistent strokes in the direction of lymph flow towards the lymph nodes, complemented by movements that stimulate lymph circulation. The gentle technique lets you fully relax, which in itself supports lymph flow.',
+      't8.name': 'Cupping',
+      't8.desc': 'Cupping creates negative pressure that can relieve tension in stiff areas. I use it based on my anatomical knowledge and experience as a medical massage therapist, and find it effective at the right moment.',
+      't9.name': 'Personal Training Outdoors',
+      't9.desc': 'Based on your goals and movement tests we tailor a training programme for you — increased range of motion, stability or injury rehabilitation. The programme can be adapted for bodyweight, resistance bands, kettlebells or an outdoor gym near you.',
+      't10.name': 'Migraine & Headache',
+      't10.desc': 'Migraine is often linked to stiff muscles in the neck and face where massage can reduce symptoms. For tension headaches or migraine, treatment relieves complaints by releasing active trigger points. If you have strong tension it may feel more intense the day after before it eases.',
       'about.eyebrow': 'About me',
       'about.name': 'Magnus Gies Melin',
       'about.role': 'Massage Therapist & Personal Trainer',
@@ -1039,22 +1138,26 @@
       'treatments.eyebrow': 'Servicios',
       'treatments.title': 'Tratamientos & PT',
       'treatments.intro': 'Eres bienvenido a un tratamiento de relajación, o si tienes algún dolor específico con el que quieras ayuda. Entonces hacemos una valoración mediante una conversación y posibles pruebas ortopédicas, y encontramos el tratamiento adecuado para ti. Ofrezco masaje clásico sueco, masaje de relajación, masaje de tejido profundo, terapia de puntos gatillo, estiramiento muscular terapéutico, masaje Lotorp, fibromassage y programas de ejercicios.',
-      't1.name': 'Masaje Clásico',
-      't1.desc': 'Masaje de cuerpo completo que libera tensiones y mejora la circulación.',
-      't1.dur': '60 min',
-      't1.price': '850 SEK',
-      't2.name': 'Masaje Deportivo',
-      't2.desc': 'Adaptado para personas activas — previene lesiones y acelera la recuperación.',
-      't2.dur': '60 min',
-      't2.price': '950 SEK',
-      't3.name': 'Entrenamiento Personal',
-      't3.desc': 'Entrenamiento personalizado con enfoque en técnica, fuerza y movilidad.',
-      't3.dur': '60 min',
-      't3.price': '1 100 SEK',
-      't4.name': 'Paquete PT 10x',
-      't4.desc': 'Diez sesiones con seguimiento continuo, programa de entrenamiento y asesoramiento nutricional.',
-      't4.dur': '10 sesiones',
-      't4.price': '9 500 SEK',
+      't1.name': 'Masaje Clásico Sueco',
+      't1.desc': 'Se utiliza para tratar la tensión muscular, mejorar la circulación y crear mayor bienestar.',
+      't2.name': 'Masoterapia Médica',
+      't2.desc': 'Comenzamos con una discusión sobre tu problema y luego un análisis de movimiento si es necesario. A partir de ahí propongo un tratamiento — masaje de relajación, tejido profundo, puntos gatillo o una combinación. Escucho y adapto la presión y el ritmo a tus necesidades.',
+      't3.name': 'Masaje de Relajación',
+      't3.desc': 'Un masaje donde solo puedes ser, con o sin música. Trae tu propia música si quieres.',
+      't4.name': 'Fibromassage',
+      't4.desc': 'Fibromassage® es un método de masaje suave especialmente adaptado para ayudar a pacientes con dolor crónico como la fibromialgia. Es un masaje de cuerpo completo que utiliza una almohadilla térmica y música para promover la relajación profunda.',
+      't5.name': 'Masaje Respiratorio',
+      't5.desc': 'El Método Lotorp es un método muy eficaz para tratar problemas respiratorios — tos, alergia a fragancias, afecciones asmáticas y EPOC. El tratamiento incluye masaje del diafragma y músculos respiratorios accesorios, más orientación para encontrar el patrón respiratorio correcto.',
+      't6.name': 'Masaje para Artrosis de Dedos',
+      't6.desc': 'Para quienes tienen artrosis en los dedos, este tratamiento aumenta la circulación — los dedos se sienten más móviles y cálidos. El tratamiento se repite idealmente cada semana.',
+      't7.name': 'Masaje Linfático',
+      't7.desc': 'Un masaje suave con movimientos constantes en la dirección del flujo linfático hacia los ganglios, complementado con movimientos que estimulan la circulación linfática.',
+      't8.name': 'Ventosas',
+      't8.desc': 'Las ventosas crean presión negativa que puede aliviar la tensión en áreas rígidas. Las utilizo basándome en mis conocimientos anatómicos y experiencia como masajista médico.',
+      't9.name': 'Entrenamiento Personal al Aire Libre',
+      't9.desc': 'Basándonos en tus objetivos y pruebas de movimiento, diseñamos un programa de entrenamiento — mayor rango de movimiento, estabilidad o rehabilitación de lesiones. El programa se puede adaptar para peso corporal, bandas elásticas, kettlebells o un gimnasio al aire libre cerca de ti.',
+      't10.name': 'Migraña y Dolor de Cabeza',
+      't10.desc': 'La migraña a menudo está relacionada con músculos tensos en el cuello y la cara donde el masaje puede reducir los síntomas. Para dolores de cabeza tensionales o migraña, el tratamiento alivia las molestias liberando puntos gatillo activos.',
       'about.eyebrow': 'Sobre mí',
       'about.name': 'Magnus Gies Melin',
       'about.role': 'Masajista & Entrenador Personal',
