@@ -384,9 +384,13 @@
 
     /* ─── TREATMENTS ─── */
     #treatments {
-      background: var(--surface);
+      background: var(--cream);
       padding: 80px 6%;
     }
+
+    #treatments .section-eyebrow { color: var(--cream-label); }
+    #treatments .section-title { color: var(--cream-heading); }
+    #treatments .section-intro { color: var(--cream-body); }
 
     .section-eyebrow {
       font-size: 14px;
@@ -412,6 +416,37 @@
       margin-bottom: 40px;
     }
 
+    .treatments__top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+
+    .treatments__header { padding-top: 4px; }
+
+    .card.card--promo {
+      background: #c9c3b5;
+      border: none;
+      border-radius: 0;
+      cursor: default;
+      align-self: start;
+      margin-top: 60px;
+      margin-left: 16px;
+      margin-right: 16px;
+    }
+    .card.card--promo:hover { box-shadow: none; }
+
+    .card__name.card__name--promo { color: var(--cream-heading); margin-bottom: 12px; }
+    .card__desc.card__desc--promo { color: var(--cream-heading); }
+
+    .card__book-btn.card__book-btn--promo {
+      background: var(--cream-heading);
+      color: var(--cream);
+    }
+    .card__book-btn.card__book-btn--promo:hover { opacity: 0.88; }
+
     .card-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -419,51 +454,77 @@
     }
 
     .card {
-      background: var(--card);
-      border: 1px solid rgba(200,242,48,0.08);
+      background: #fff;
+      border: 1px solid rgba(45,82,64,0.15);
       border-radius: 12px;
       padding: 20px;
       display: flex;
       flex-direction: column;
+      cursor: pointer;
+      user-select: none;
+      transition: box-shadow 0.2s;
     }
-
-    .card__icon {
-      font-size: 22px;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
+    .card:hover { box-shadow: 0 4px 20px rgba(45,82,64,0.12); }
 
     .card__name {
       font-family: 'Barlow', sans-serif;
       font-weight: 500;
       font-size: 16px;
       text-transform: uppercase;
-      color: var(--text);
+      color: var(--cream-heading);
+      margin-bottom: 6px;
     }
 
     .card__desc {
       font-size: 14px;
-      color: rgba(245,245,240,0.75);
+      color: var(--cream-body);
       line-height: 1.6;
-      margin: 6px 0 14px;
-      flex: 1;
+      margin-bottom: 14px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: none;
+    }
+    .card--expanded .card__desc {
+      display: block;
+      overflow: visible;
+      -webkit-line-clamp: unset;
     }
 
-    .card__tags {
+    .card__footer {
       display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
     }
 
-    .tag {
-      font-size: 14px;
-      color: var(--accent);
-      background: rgba(200,242,48,0.08);
-      padding: 3px 10px;
-      border-radius: 10px;
-      letter-spacing: 0.06em;
+    .card__book-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--cream-body);
+      color: var(--cream);
       font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      cursor: pointer;
     }
+    .card__book-btn:hover { opacity: 0.8; }
+
+    .card__chevron {
+      color: var(--cream-label);
+      font-size: 18px;
+      line-height: 1;
+      transition: transform 0.25s ease;
+      flex-shrink: 0;
+    }
+    .card--expanded .card__chevron { transform: rotate(180deg); }
 
     /* ─── ABOUT ─── */
     #about {
@@ -634,6 +695,12 @@
       .nav__right { display: none; }
       .nav__hamburger { display: flex; }
 
+      .treatments__top { grid-template-columns: 1fr; margin-bottom: 16px; }
+      .treatments__top .treatments__header { order: 2; }
+      .treatments__top .card--promo { order: 1; margin-left: 0; margin-right: 0; margin-top: 0; }
+      #treatments { padding: 24px 6% 40px; }
+      #about { padding: 32px 6%; }
+      .section-intro { margin-bottom: 20px; }
       .card-grid { grid-template-columns: 1fr; }
 
       .about__grid {
@@ -729,41 +796,52 @@
 
   <!-- ─── TREATMENTS ─── -->
   <section id="treatments">
-    <span class="section-eyebrow reveal" data-i18n="treatments.eyebrow">Tjänster</span>
-    <h2 class="section-title reveal" data-i18n="treatments.title">Behandlingar &amp; PT</h2>
-    <p class="section-intro reveal" data-i18n="treatments.intro">Oavsett om du söker återhämtning, skadeförebyggande eller vill ta din träning till nästa nivå — här hittar du rätt behandling för dig.</p>
+    <div class="treatments__top">
+      <div class="treatments__header">
+        <span class="section-eyebrow reveal" data-i18n="treatments.eyebrow">Tjänster</span>
+        <h2 class="section-title reveal" data-i18n="treatments.title">Behandlingar &amp; PT</h2>
+        <p class="section-intro reveal" data-i18n="treatments.intro">Oavsett om du söker återhämtning, skadeförebyggande eller vill ta din träning till nästa nivå — här hittar du rätt behandling för dig.</p>
+      </div>
+      <div class="card card--promo reveal">
+        <h3 class="card__name card__name--promo">Massage på jobbet?</h3>
+        <p class="card__desc card__desc--promo" style="-webkit-line-clamp:unset;display:block;overflow:visible;">Ett omtyckt sätt att få kollegor och anställda att må bra. Friskvårdsbidraget kan användas för massage och träning. Kontakta mig för att diskutera upplägg.</p>
+        <div class="card__footer">
+          <a href="#contact" class="card__book-btn card__book-btn--promo">Kontakta mig →</a>
+        </div>
+      </div>
+    </div>
 
     <div class="card-grid">
-      <div class="card reveal">
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t1.name">Klassisk Massage</h3>
-        <p class="card__desc" data-i18n="t1.desc">Helkroppsmassage som löser spänningar och förbättrar cirkulationen.</p>
-        <div class="card__tags">
-          <span class="tag" data-i18n="t1.dur">60 min</span>
-          <span class="tag" data-i18n="t1.price">850 kr</span>
+        <p class="card__desc" data-i18n="t1.desc">Helkroppsmassage som löser spänningar och förbättrar cirkulationen. Jag arbetar med svensk klassisk teknik som mjukar upp muskler, ökar blodflödet och ger djup avslappning i hela kroppen.</p>
+        <div class="card__footer">
+          <a href="#contact" class="card__book-btn"><span data-i18n="t1.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t1.price">850 kr</span></a>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
-      <div class="card reveal">
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t2.name">Sportmassage</h3>
-        <p class="card__desc" data-i18n="t2.desc">Anpassad för aktiva — förebygger skador och påskyndar återhämtning.</p>
-        <div class="card__tags">
-          <span class="tag" data-i18n="t2.dur">60 min</span>
-          <span class="tag" data-i18n="t2.price">950 kr</span>
+        <p class="card__desc" data-i18n="t2.desc">Anpassad för aktiva — förebygger skador och påskyndar återhämtning. Behandlingen fokuserar på de muskelgrupper du belastar mest i din träning och hjälper kroppen återhämta sig snabbare.</p>
+        <div class="card__footer">
+          <a href="#contact" class="card__book-btn"><span data-i18n="t2.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t2.price">950 kr</span></a>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
-      <div class="card reveal">
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t3.name">Personal Training</h3>
-        <p class="card__desc" data-i18n="t3.desc">Individanpassad träning med fokus på teknik, styrka och rörlighet.</p>
-        <div class="card__tags">
-          <span class="tag" data-i18n="t3.dur">60 min</span>
-          <span class="tag" data-i18n="t3.price">1 100 kr</span>
+        <p class="card__desc" data-i18n="t3.desc">Individanpassad träning med fokus på teknik, styrka och rörlighet. Vi utgår från dina mål och din nuvarande nivå och bygger ett program som ger resultat utan att slita ut kroppen.</p>
+        <div class="card__footer">
+          <a href="#contact" class="card__book-btn"><span data-i18n="t3.dur">60 min</span>&nbsp;·&nbsp;<span data-i18n="t3.price">1 100 kr</span></a>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
-      <div class="card reveal">
+      <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t4.name">PT-Paket 10x</h3>
-        <p class="card__desc" data-i18n="t4.desc">Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning.</p>
-        <div class="card__tags">
-          <span class="tag" data-i18n="t4.dur">10 ggr</span>
-          <span class="tag" data-i18n="t4.price">9 500 kr</span>
+        <p class="card__desc" data-i18n="t4.desc">Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning. Paketet är utformat för dig som vill se verklig förändring och behöver struktur och stöd under en längre period.</p>
+        <div class="card__footer">
+          <a href="#contact" class="card__book-btn"><span data-i18n="t4.dur">10 ggr</span>&nbsp;·&nbsp;<span data-i18n="t4.price">9 500 kr</span></a>
+          <span class="card__chevron" aria-hidden="true"><i class="ti ti-chevron-down"></i></span>
         </div>
       </div>
     </div>
@@ -852,19 +930,19 @@
       'treatments.title': 'Behandlingar & PT',
       'treatments.intro': 'Du är välkommen på en avslappningsbehandling eller om du har någon specifik smärta som du vill ha hjälp med. Då gör vi en bedömning efter samtal och eventuella ortopediska tester och kommer fram till passande behandling. Jag erbjuder svensk klassisk massage, avslappningsmassage, deep tissue-massage, triggerpunktsbehandling, terapeutisk muskeltöjning, lotorpsmassage, fibromassage och träningsövningar.',
       't1.name': 'Klassisk Massage',
-      't1.desc': 'Helkroppsmassage som löser spänningar och förbättrar cirkulationen.',
+      't1.desc': 'Helkroppsmassage som löser spänningar och förbättrar cirkulationen. Jag arbetar med svensk klassisk teknik som mjukar upp muskler, ökar blodflödet och ger djup avslappning i hela kroppen.',
       't1.dur': '60 min',
       't1.price': '850 kr',
       't2.name': 'Sportmassage',
-      't2.desc': 'Anpassad för aktiva — förebygger skador och påskyndar återhämtning.',
+      't2.desc': 'Anpassad för aktiva — förebygger skador och påskyndar återhämtning. Behandlingen fokuserar på de muskelgrupper du belastar mest i din träning och hjälper kroppen återhämta sig snabbare.',
       't2.dur': '60 min',
       't2.price': '950 kr',
       't3.name': 'Personal Training',
-      't3.desc': 'Individanpassad träning med fokus på teknik, styrka och rörlighet.',
+      't3.desc': 'Individanpassad träning med fokus på teknik, styrka och rörlighet. Vi utgår från dina mål och din nuvarande nivå och bygger ett program som ger resultat utan att slita ut kroppen.',
       't3.dur': '60 min',
       't3.price': '1 100 kr',
       't4.name': 'PT-Paket 10x',
-      't4.desc': 'Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning.',
+      't4.desc': 'Tio sessioner med löpande uppföljning, träningsprogram och kostrådgivning. Paketet är utformat för dig som vill se verklig förändring och behöver struktur och stöd under en längre period.',
       't4.dur': '10 ggr',
       't4.price': '9 500 kr',
       'about.eyebrow': 'Om mig',
@@ -1099,6 +1177,19 @@
     formThanks.style.display = 'block';
     // Re-apply current lang to the thanks message
     formThanks.querySelector('[data-i18n]').innerHTML = strings[currentLang]['form.thanks'];
+  });
+
+  // ─── CARD EXPAND / COLLAPSE ───
+  document.querySelectorAll('.card').forEach(card => {
+    function toggle(e) {
+      if (e.target.closest('.card__book-btn')) return;
+      const expanded = card.classList.toggle('card--expanded');
+      card.setAttribute('aria-expanded', expanded);
+    }
+    card.addEventListener('click', toggle);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
+    });
   });
 
   // ─── SCROLL ANIMATIONS ───
