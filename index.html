@@ -441,6 +441,12 @@
     .card__name.card__name--promo { color: var(--cream-heading); margin-bottom: 12px; }
     .card__desc.card__desc--promo { color: var(--cream-heading); }
 
+    .card__desc a {
+      color: var(--cream-label);
+      text-decoration: underline;
+    }
+    .card__desc a:hover { color: var(--cream-heading); }
+
     .card__book-btn.card__book-btn--promo {
       background: var(--cream-heading);
       color: var(--cream);
@@ -708,6 +714,10 @@
     }
 
     /* ─── RESPONSIVE ─── */
+    @media (min-width: 769px) {
+      #about { padding-bottom: 40px; }
+    }
+
     @media (max-width: 768px) {
       .nav__right { display: none; }
       .nav__hamburger { display: flex; }
@@ -810,6 +820,19 @@
     </div>
   </section>
 
+  <!-- ─── ABOUT ─── -->
+  <section id="about">
+    <span class="section-eyebrow reveal" data-i18n="about.eyebrow">Om mig</span>
+    <div class="about__grid">
+      <img src="profil.jpg" alt="Foto av Magnus Gies Melin" class="about__photo reveal" />
+      <div class="reveal">
+        <h2 class="section-title" data-i18n="about.name">Magnus Gies Melin</h2>
+        <p class="about__role" data-i18n="about.role">Massageterapeut &amp; Personlig Tränare</p>
+        <p class="about__bio" data-i18n="about.bio">Med över tio års erfarenhet inom massage och personlig träning har jag hjälpt hundratals klienter att hitta balansen mellan prestation och återhämtning. Min filosofi är enkel: lyssna på kroppen, arbeta smart och bygg vanor som håller livet ut. Oavsett om du är elitidrottare eller nybörjare är du välkommen här.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ─── TREATMENTS ─── -->
   <section id="treatments">
     <div class="treatments__top">
@@ -843,7 +866,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t2.name">Medicinsk massageterapi</h3>
-        <p class="card__desc" data-i18n="t2.desc">Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen. Utifrån det föreslår jag en behandling — avslappningsmassage, deep tissue-massage, triggerpunktsbehandling eller ofta en kombination. Jag lyssnar och anpassar efter dina behov vad gäller tryck och hastighet.</p>
+        <p class="card__desc" data-i18n="t2.desc">Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen och med den information föreslår jag en viss massagebehandling. Det som erbjuds är avslappningsmassage, deep tissue-massage, triggerpunktsbehandling men ofta en kombination av detta utefter dina önskemål. Jag lyssnar och försöker anpassa behandlingen efter dina behov vad det gäller tryck och hastighet.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">Nybesök 45 min · 850 kr</a>
@@ -866,7 +889,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t4.name">Fibromassage</h3>
-        <p class="card__desc" data-i18n="t4.desc">Fibromassage® är en speciellt anpassad, mycket mild massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi. Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.</p>
+        <p class="card__desc" data-i18n="t4.desc">Fibromassage® är en speciellt anpassad, mycket mild, massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi (<a href="https://www.fibromassage.se/" target="_blank" rel="noopener">fibromassage.se</a>). Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">75 min · 1 100 kr</a>
@@ -877,7 +900,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t5.name">Andningsmassage</h3>
-        <p class="card__desc" data-i18n="t5.desc">Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem — hosta, doft- och parfymallergi, astmaliknande åkommor samt KOL. En del av behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är guidning till rätt andningsmönster.</p>
+        <p class="card__desc" data-i18n="t5.desc">Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem. Metoden bygger på manuella behandlingsmetoder och för bland annat följande åkommor har den ett mycket gott resultat:<br>• Hosta<br>• Doft och parfymallergi<br>• Astmaliknande åkommor där astma inte konstaterats<br>Även personer med till exempel riktig astma och KOL har stor nytta av dessa behandlingar eftersom behandlingen lindrar symptomen.<br>En del i behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är en guidning i att hitta rätt andningsmönster (<a href="https://www.lotorpsmetoden.se/" target="_blank" rel="noopener">lotorpsmetoden.se</a>).</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
@@ -889,7 +912,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t6.name">Fingerartrosmassage</h3>
-        <p class="card__desc" data-i18n="t6.desc">För dig med fingerartros ger denna behandling ökad cirkulation — fingrarna känns rörligare och varmare. Behandlingen upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut, eller så hittar vi passande övningar tillsammans.</p>
+        <p class="card__desc" data-i18n="t6.desc">För dig med fingerartros ger denna behandling en ökad cirkulation och dina fingrar känns rörligare och varmare. Behandlingen tar 20 minuter och upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut eller så kan vi hitta passande övningar.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">20 min · 500 kr</a>
@@ -901,7 +924,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t7.name">Lymfmassage</h3>
-        <p class="card__desc" data-i18n="t7.desc">En mild massage med konsekventa strykningar i lymfflödets riktning mot lymfnoderna, kompletterad med rörelser som stimulerar lymfflödet. Den milda tekniken gör att du kan slappna av helt, vilket i sig hjälper lymfcirkulationen.</p>
+        <p class="card__desc" data-i18n="t7.desc">Lymfmassage är en mild massage med konsekventa strykningar i lymfflödets riktning till lymfnoderna. Jag gör även några rörelser för att stimulera lymfflödet. Eftersom massagen och rörelserna är milda behöver en sällan fråga hur trycket är och patienten kan slappna av vilket hjälper lymfcirkulationen. Kolla i videon för rörelsetips för att stimulera lymfan.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">60 min · 950 kr</a>
@@ -923,7 +946,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t9.name">Personlig träning utomhus</h3>
-        <p class="card__desc" data-i18n="t9.desc">Utifrån dina mål och rörelsetester skräddarsyr vi ett träningsprogram för dig — ökat rörelseomfång, ökad stabilitet eller rehabilitering av skador. Programmet kan anpassas för kroppsvikt, gummiband, kettlebells eller ett utomhusgym nära dig.</p>
+        <p class="card__desc" data-i18n="t9.desc">Utifrån dina mål och rörelsetester så kan vi skräddarsy ett träningsprogram för dig. Kanske vill vi öka ditt rörelseomfång i vissa rörelser eller öka stabiliteten vid en rörelse. Om du har skador kan vi göra ett program för att rehabilitera dem. Jag kan ge träningsprogram med kroppsvikt, gummiband, kettlebells eller anpassat för ett utomhusgym nära dig.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
@@ -935,7 +958,7 @@
 
       <div class="card reveal" role="button" tabindex="0" aria-expanded="false">
         <h3 class="card__name" data-i18n="t10.name">Migrän &amp; huvudvärk</h3>
-        <p class="card__desc" data-i18n="t10.desc">Kopplat till migrän finns ofta stela muskler i nacke och ansikte där massage kan minska symtomen. För dig med spänningshuvudvärk eller migrän kan behandlingen lindra besvären genom att lösa upp aktiva triggerpunkter. Har du kraftiga spänningar kan det kännas intensivare dagen efter, innan det lättar.</p>
+        <p class="card__desc" data-i18n="t10.desc">Massage kan givetvis inte bota migrän, men kopplat till migrän finns ofta stela muskler i nacke och ansikte, där massage kan minska symtomen. Migrän uppstår ofta på grund av stela halsmuskler och ansiktsmuskler.<br>För dig med huvudvärk av spänningstyp, migrän så kan denna massage hjälpa dig att lindra symtomen. Har du kraftiga spänningar så kan det kännas intensivare dagen efter, innan det blir lättare. Massagen löser upp aktiva triggerpunkter som gör ont.</p>
         <div class="card__footer">
           <div class="card__prices">
             <a href="#contact" class="card__book-btn">45 min · 850 kr</a>
@@ -944,19 +967,6 @@
         </div>
       </div>
 
-    </div>
-  </section>
-
-  <!-- ─── ABOUT ─── -->
-  <section id="about">
-    <span class="section-eyebrow reveal" data-i18n="about.eyebrow">Om mig</span>
-    <div class="about__grid">
-      <img src="profil.jpg" alt="Foto av Magnus Gies Melin" class="about__photo reveal" />
-      <div class="reveal">
-        <h2 class="section-title" data-i18n="about.name">Magnus Gies Melin</h2>
-        <p class="about__role" data-i18n="about.role">Massageterapeut &amp; Personlig Tränare</p>
-        <p class="about__bio" data-i18n="about.bio">Med över tio års erfarenhet inom massage och personlig träning har jag hjälpt hundratals klienter att hitta balansen mellan prestation och återhämtning. Min filosofi är enkel: lyssna på kroppen, arbeta smart och bygg vanor som håller livet ut. Oavsett om du är elitidrottare eller nybörjare är du välkommen här.</p>
-      </div>
     </div>
   </section>
 
@@ -1035,23 +1045,23 @@
       't1.name': 'Svensk klassisk massage',
       't1.desc': 'Används för att behandla muskelspänningar, förbättra cirkulationen och skapa ökat välbefinnande.',
       't2.name': 'Medicinsk massageterapi',
-      't2.desc': 'Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen. Utifrån det föreslår jag en behandling — avslappningsmassage, deep tissue-massage, triggerpunktsbehandling eller ofta en kombination. Jag lyssnar och anpassar efter dina behov vad gäller tryck och hastighet.',
+      't2.desc': 'Först har vi en diskussion om vilket problem du vill ha hjälp med och därefter gör vi eventuellt en rörelseanalys för att öka förståelsen och med den information föreslår jag en viss massagebehandling. Det som erbjuds är avslappningsmassage, deep tissue-massage, triggerpunktsbehandling men ofta en kombination av detta utefter dina önskemål. Jag lyssnar och försöker anpassa behandlingen efter dina behov vad det gäller tryck och hastighet.',
       't3.name': 'Avslappningsmassage',
       't3.desc': 'En massage där du bara får vara, med eller utan musik. Ta med din egen musik om du vill.',
       't4.name': 'Fibromassage',
-      't4.desc': 'Fibromassage® är en speciellt anpassad, mycket mild massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi. Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.',
+      't4.desc': 'Fibromassage® är en speciellt anpassad, mycket mild, massagemetod som utvecklats för att hjälpa patienter med kronisk smärta, till exempel fibromyalgi (<a href="https://www.fibromassage.se/" target="_blank" rel="noopener">fibromassage.se</a>). Det är en helkroppsmassage där även värmekudde och musik används för att slappna av.',
       't5.name': 'Andningsmassage',
-      't5.desc': 'Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem — hosta, doft- och parfymallergi, astmaliknande åkommor samt KOL. En del av behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är guidning till rätt andningsmönster.',
+      't5.desc': 'Lotorpsmetoden är en mycket effektiv metod för att behandla andningsproblem. Metoden bygger på manuella behandlingsmetoder och för bland annat följande åkommor har den ett mycket gott resultat:<br>• Hosta<br>• Doft och parfymallergi<br>• Astmaliknande åkommor där astma inte konstaterats<br>Även personer med till exempel riktig astma och KOL har stor nytta av dessa behandlingar eftersom behandlingen lindrar symptomen.<br>En del i behandlingen är massage av diafragman och accessoriska andningsmuskler, en annan del är en guidning i att hitta rätt andningsmönster (<a href="https://www.lotorpsmetoden.se/" target="_blank" rel="noopener">lotorpsmetoden.se</a>).',
       't6.name': 'Fingerartrosmassage',
-      't6.desc': 'För dig med fingerartros ger denna behandling ökad cirkulation — fingrarna känns rörligare och varmare. Behandlingen upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut, eller så hittar vi passande övningar tillsammans.',
+      't6.desc': 'För dig med fingerartros ger denna behandling en ökad cirkulation och dina fingrar känns rörligare och varmare. Behandlingen tar 20 minuter och upprepas förslagsvis veckovis. Gör gärna dina övningar från din fysioterapeut eller så kan vi hitta passande övningar.',
       't7.name': 'Lymfmassage',
-      't7.desc': 'En mild massage med konsekventa strykningar i lymfflödets riktning mot lymfnoderna, kompletterad med rörelser som stimulerar lymfflödet. Den milda tekniken gör att du kan slappna av helt, vilket i sig hjälper lymfcirkulationen.',
+      't7.desc': 'Lymfmassage är en mild massage med konsekventa strykningar i lymfflödets riktning till lymfnoderna. Jag gör även några rörelser för att stimulera lymfflödet. Eftersom massagen och rörelserna är milda behöver en sällan fråga hur trycket är och patienten kan slappna av vilket hjälper lymfcirkulationen. Kolla i videon för rörelsetips för att stimulera lymfan.',
       't8.name': 'Koppning',
-      't8.desc': 'Koppningen skapar ett undertryck som kan lätta på spänningar i stela områden. Jag använder det utifrån mina anatomiska kunskaper och erfarenhet som medicinsk massageterapeut och finner det effektivt vid rätt tillfälle.',
+      't8.desc': 'Koppningen skapar ett undertryck vilket kan lätta på spänningar i stela områden. Jag använder det utifrån mina anatomiska kunskaper och erfarenhet som medicinsk massageterapeut och finner det effektivt vid rätt tillfälle.',
       't9.name': 'Personlig träning utomhus',
-      't9.desc': 'Utifrån dina mål och rörelsetester skräddarsyr vi ett träningsprogram för dig — ökat rörelseomfång, ökad stabilitet eller rehabilitering av skador. Programmet kan anpassas för kroppsvikt, gummiband, kettlebells eller ett utomhusgym nära dig.',
-      't10.name': 'Migrän & huvudvärk',
-      't10.desc': 'Kopplat till migrän finns ofta stela muskler i nacke och ansikte där massage kan minska symtomen. För dig med spänningshuvudvärk eller migrän kan behandlingen lindra besvären genom att lösa upp aktiva triggerpunkter. Har du kraftiga spänningar kan det kännas intensivare dagen efter, innan det lättar.',
+      't9.desc': 'Utifrån dina mål och rörelsetester så kan vi skräddarsy ett träningsprogram för dig. Kanske vill vi öka ditt rörelseomfång i vissa rörelser eller öka stabiliteten vid en rörelse. Om du har skador kan vi göra ett program för att rehabilitera dem. Jag kan ge träningsprogram med kroppsvikt, gummiband, kettlebells eller anpassat för ett utomhusgym nära dig.',
+      't10.name': 'Migrän och huvudvärk',
+      't10.desc': 'Massage kan givetvis inte bota migrän, men kopplat till migrän finns ofta stela muskler i nacke och ansikte, där massage kan minska symtomen. Migrän uppstår ofta på grund av stela halsmuskler och ansiktsmuskler.<br>För dig med huvudvärk av spänningstyp, migrän så kan denna massage hjälpa dig att lindra symtomen. Har du kraftiga spänningar så kan det kännas intensivare dagen efter, innan det blir lättare. Massagen löser upp aktiva triggerpunkter som gör ont.',
       'about.eyebrow': 'Om mig',
       'about.name': 'Magnus Gies Melin',
       'about.role': 'Massageterapeut & Personlig Tränare',
@@ -1217,7 +1227,7 @@
   }
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    btn.addEventListener('click', () => { applyLang(btn.dataset.lang); updateChevrons(); });
   });
 
   applyLang(currentLang);
@@ -1295,9 +1305,27 @@
   });
 
   // ─── CARD EXPAND / COLLAPSE ───
-  document.querySelectorAll('.card').forEach(card => {
+  function updateChevrons() {
+    document.querySelectorAll('.card:not(.card--promo)').forEach(card => {
+      const desc = card.querySelector('.card__desc');
+      const chevron = card.querySelector('.card__chevron');
+      if (!desc || !chevron) return;
+      // Temporarily collapse to measure clamped height
+      const wasExpanded = card.classList.contains('card--expanded');
+      if (wasExpanded) card.classList.remove('card--expanded');
+      const isTruncated = desc.scrollHeight > desc.clientHeight + 2;
+      if (wasExpanded) card.classList.add('card--expanded');
+      chevron.style.visibility = isTruncated ? 'visible' : 'hidden';
+      card.style.cursor = isTruncated ? 'pointer' : 'default';
+    });
+  }
+
+  document.querySelectorAll('.card:not(.card--promo)').forEach(card => {
     function toggle(e) {
       if (e.target.closest('.card__book-btn')) return;
+      const desc = card.querySelector('.card__desc');
+      const chevron = card.querySelector('.card__chevron');
+      if (chevron && chevron.style.visibility === 'hidden') return;
       const expanded = card.classList.toggle('card--expanded');
       card.setAttribute('aria-expanded', expanded);
     }
@@ -1306,6 +1334,14 @@
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(e); }
     });
   });
+
+  // Run after fonts/layout are ready
+  if (document.fonts) {
+    document.fonts.ready.then(updateChevrons);
+  } else {
+    window.addEventListener('load', updateChevrons);
+  }
+  window.addEventListener('resize', updateChevrons);
 
   // ─── SCROLL ANIMATIONS ───
   // Respect prefers-reduced-motion
