@@ -2,7 +2,8 @@
 // GET /api/get-slots?date=YYYY-MM-DD&session_length=N
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;           // publishable key (kept for reference)
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY; // service-role key — server-side only
 
 const HEADERS = {
   'Content-Type': 'application/json',
@@ -23,8 +24,8 @@ function minsToTime(m) {
 async function supabaseGet(path) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_SECRET_KEY,
+      Authorization: `Bearer ${SUPABASE_SECRET_KEY}`,
       'Content-Type': 'application/json',
     },
   });

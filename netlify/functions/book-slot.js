@@ -2,7 +2,8 @@
 // Body: { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone }
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;           // publishable key (kept for reference)
+const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY; // service-role key — server-side only
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const THERAPIST_EMAIL = process.env.THERAPIST_EMAIL;
 
@@ -25,8 +26,8 @@ function minsToTime(m) {
 async function supabaseGet(path) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_SECRET_KEY,
+      Authorization: `Bearer ${SUPABASE_SECRET_KEY}`,
       'Content-Type': 'application/json',
     },
   });
@@ -38,8 +39,8 @@ async function supabaseInsert(table, data) {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
     method: 'POST',
     headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_SECRET_KEY,
+      Authorization: `Bearer ${SUPABASE_SECRET_KEY}`,
       'Content-Type': 'application/json',
       Prefer: 'return=representation',
     },
