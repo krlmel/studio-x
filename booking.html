@@ -1012,19 +1012,21 @@
 // ─── DATA ───────────────────────────────────────────────────────────────────
 
 const TREATMENTS = [
+  // Order mirrors the treatment cards on the main page
+  { name: 'Klassisk svensk massage',             lengths: [45, 60] },
+  { name: 'Nybesök Medicinsk massageterapi',     lengths: [60] },
+  { name: 'Medicinsk massageterapi',             lengths: [30, 45, 60] },
+  { name: 'Avslappningsmassage',                 lengths: [45, 60, 90] },
   { name: 'Nybesök Fibromassage',               lengths: [90] },
   { name: 'Fibromassage',                        lengths: [75] },
   { name: 'Nybesök Lottorpsmetoden',             lengths: [75] },
   { name: 'Lottorpsmetoden',                     lengths: [60] },
   { name: 'Nybesök Fingerartros',                lengths: [30] },
   { name: 'Fingerartros',                        lengths: [20] },
-  { name: 'Nybesök Medicinsk massageterapi',     lengths: [60] },
-  { name: 'Medicinsk massageterapi',             lengths: [60, 45, 30] },
-  { name: 'Avslappningsmassage',                 lengths: [90, 60, 45] },
-  { name: 'Nybesök Migrän eller huvudvärk',      lengths: [60] },
-  { name: 'Migrän eller huvudvärk',              lengths: [60, 45, 30] },
+  { name: 'Lymfmassage',                         lengths: [60] },
   { name: 'Koppning',                            lengths: [45] },
-  { name: 'Klassisk svensk massage',             lengths: [60, 45] },
+  { name: 'Nybesök Migrän eller huvudvärk',      lengths: [60] },
+  { name: 'Migrän eller huvudvärk',              lengths: [30, 45, 60] },
 ];
 
 const PRICES = { 20: 340, 30: 590, 45: 690, 60: 890, 75: 1090, 90: 1290 };
