@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Boka tid — Magnus Massageterapi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,800;1,300&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0f1f16;
+      --accent:       #DCFF76;
+      /* cream palette — matches #treatments / #about sections */
+      --cream:        #f0ede4;
+      --cream-card:   #ffffff;
+      --cream-border: rgba(45,82,64,0.15);
+      --cream-head:   #0f1f16;
+      --cream-body:   #4a6355;
+      --cream-label:  #2d5240;
+      --cream-muted:  rgba(74,99,85,0.55);
+      --cream-input:  #f7f5f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--cream-head);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--cream-label);
+      outline-offset: 3px;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: var(--bg);
+      border-bottom: 1px solid rgba(220,255,118,0.12);
+    }
+
+    .nav__logo { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+    .nav__logo-name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #f5f5f0;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav__logo-sub {
+      font-size: 14px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .nav__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(245,245,240,0.5);
+      font-size: 14px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav__back:hover { color: #f5f5f0; }
+
+    /* ─── MAIN ─── */
+    main {
+      flex: 1;
+      padding: 80px 5% 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .booking-wrap {
+      width: 100%;
+      max-width: 860px;
+    }
+
+    /* ─── STEP INDICATOR ─── */
+    .steps {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      max-width: 120px;
+    }
+
+    .step__bubble {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      border: 2px solid var(--cream-border);
+      background: transparent;
+      color: var(--cream-muted);
+      transition: background 0.25s, border-color 0.25s, color 0.25s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step.is-done .step__bubble {
+      background: var(--bg);
+      border-color: var(--bg);
+      color: var(--accent);
+    }
+
+    .step.is-current .step__bubble {
+      background: var(--bg);
+      border-color: var(--bg);
+      color: var(--accent);
+    }
+
+    .step__label {
+      font-size: 11px;
+      color: var(--cream-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .step.is-done .step__label,
+    .step.is-current .step__label {
+      color: var(--cream-label);
+    }
+
+    .step-line {
+      flex: 1;
+      height: 1px;
+      background: var(--cream-border);
+      margin: 0 4px;
+      margin-bottom: 22px;
+      transition: background 0.25s;
+    }
+    .step-line.is-done { background: var(--bg); }
+
+    /* ─── PANEL ─── */
+    .panel {
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 16px;
+      padding: 40px;
+      display: none;
+      box-shadow: 0 2px 16px rgba(45,82,64,0.07);
+    }
+    .panel.is-active { display: block; }
+
+    .panel__title {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: clamp(22px, 3vw, 28px);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cream-head);
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .panel__sub {
+      text-align: center;
+      color: var(--cream-body);
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    /* ─── STEP 1: 2-COLUMN ─── */
+    .step1-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      min-height: 380px;
+    }
+
+    .treatment-col {
+      border-right: 1px solid var(--cream-border);
+      padding-right: 24px;
+    }
+
+    .treatment-col__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cream-label);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .treatment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    /* subtle scrollbar */
+    .treatment-list::-webkit-scrollbar { width: 4px; }
+    .treatment-list::-webkit-scrollbar-track { background: transparent; }
+    .treatment-list::-webkit-scrollbar-thumb { background: var(--cream-border); border-radius: 4px; }
+
+    .treatment-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 14px;
+      border: 1px solid var(--cream-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: transparent;
+      color: var(--cream-head);
+      text-align: left;
+      width: 100%;
+      font-family: 'DM Sans', sans-serif;
+      gap: 8px;
+    }
+
+    .treatment-item:hover {
+      border-color: var(--cream-label);
+      background: rgba(45,82,64,0.04);
+    }
+
+    .treatment-item.is-selected {
+      border-color: var(--bg);
+      background: rgba(15,31,22,0.06);
+    }
+
+    .treatment-item__check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--cream-border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .treatment-item.is-selected .treatment-item__check {
+      background: var(--bg);
+      border-color: var(--bg);
+    }
+
+    .treatment-item.is-selected .treatment-item__check::after {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .treatment-item__name {
+      font-size: 14px;
+      font-weight: 500;
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    /* ─── LENGTH / PRICE COLUMN ─── */
+    .length-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .length-col__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--cream-label);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .length-placeholder {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--cream-muted);
+      font-size: 14px;
+      padding: 24px;
+    }
+
+    .length-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .length-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border: 1px solid var(--cream-border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      background: transparent;
+      color: var(--cream-head);
+      font-family: 'DM Sans', sans-serif;
+      text-align: left;
+      width: 100%;
+    }
+
+    .length-option:hover {
+      border-color: var(--cream-label);
+      background: rgba(45,82,64,0.04);
+    }
+
+    .length-option.is-selected {
+      border-color: var(--bg);
+      background: rgba(15,31,22,0.06);
+    }
+
+    .length-option__mins {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cream-head);
+    }
+
+    .length-option__price {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cream-body);
+    }
+
+    .length-option.is-selected .length-option__price {
+      color: var(--cream-label);
+    }
+
+    /* Single fixed length */
+    .fixed-length-box {
+      padding: 14px 16px;
+      background: rgba(45,82,64,0.06);
+      border: 1px solid rgba(45,82,64,0.2);
+      border-radius: 8px;
+    }
+
+    .fixed-length-box__row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .fixed-length-box__mins {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cream-head);
+    }
+
+    .fixed-length-box__price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--cream-label);
+    }
+
+    .fixed-length-box__note {
+      font-size: 12px;
+      color: var(--cream-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── CALENDAR + SLOTS ─── */
+    .datetime-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .calendar-wrap {
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .cal-header__title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cream-head);
+      text-transform: capitalize;
+    }
+
+    .cal-nav {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--cream-muted);
+      font-size: 16px;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .cal-nav:hover:not(:disabled) { color: var(--cream-head); }
+    .cal-nav:disabled { opacity: 0.25; cursor: default; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .cal-day-name {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--cream-muted);
+      padding-bottom: 8px;
+    }
+
+    .cal-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--cream-head);
+      font-weight: 500;
+      background: none;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: background 0.12s;
+    }
+
+    .cal-cell:hover:not(:disabled):not(.cal-cell--empty) {
+      background: rgba(15,31,22,0.08);
+    }
+
+    .cal-cell--today {
+      border: 1.5px solid var(--cream-label) !important;
+    }
+
+    .cal-cell--selected {
+      background: var(--bg) !important;
+      color: var(--accent) !important;
+      font-weight: 700;
+    }
+
+    .cal-cell--selected.cal-cell--today {
+      border-color: var(--bg) !important;
+    }
+
+    .cal-cell:disabled,
+    .cal-cell--empty {
+      color: rgba(74,99,85,0.25);
+      cursor: default;
+    }
+
+    /* ─── SLOTS ─── */
+    .slots-wrap {
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .slots-wrap__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream-label);
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .slots-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .slot-pill {
+      padding: 8px 16px;
+      border: 1px solid var(--cream-border);
+      border-radius: 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--cream-head);
+      background: transparent;
+      transition: border-color 0.12s, background 0.12s, color 0.12s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .slot-pill:hover { border-color: var(--cream-label); }
+
+    .slot-pill.is-selected {
+      background: var(--bg);
+      border-color: var(--bg);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .slots-empty {
+      font-size: 14px;
+      color: var(--cream-muted);
+      line-height: 1.5;
+    }
+
+    .slots-loading {
+      font-size: 14px;
+      color: var(--cream-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(45,82,64,0.2);
+      border-top-color: var(--cream-label);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .slot-err {
+      font-size: 13px;
+      color: #c0392b;
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+
+    /* ─── FORM (STEP 3) ─── */
+    .form-group { margin-bottom: 20px; }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream-label);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--cream-input);
+      border: 1px solid var(--cream-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--cream-head);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-input::placeholder { color: var(--cream-muted); }
+    .form-input:focus { border-color: var(--cream-label); }
+
+    /* ─── CONFIRM (STEP 4) ─── */
+    .confirm-card {
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .confirm-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--cream-border);
+    }
+    .confirm-row:last-child { border-bottom: none; }
+
+    .confirm-row__icon {
+      color: var(--cream-label);
+      font-size: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .confirm-row__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream-muted);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .confirm-row__value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cream-head);
+    }
+
+    .confirm-row__sub {
+      font-size: 13px;
+      color: var(--cream-body);
+      margin-top: 2px;
+    }
+
+    .confirm-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .confirm-meta .confirm-row {
+      border-bottom: 1px solid var(--cream-border);
+      border-right: 1px solid var(--cream-border);
+    }
+    .confirm-meta .confirm-row:last-child { border-right: none; }
+
+    .confirm-customer {
+      padding: 16px 20px;
+    }
+
+    .confirm-customer__label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream-muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .confirm-customer__row {
+      font-size: 14px;
+      color: var(--cream-head);
+      margin-bottom: 4px;
+    }
+
+    .confirm-customer__row span { color: var(--cream-body); margin-right: 6px; }
+
+    /* ─── ACTIONS ─── */
+    .panel-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--cream-border);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--cream-border);
+      border-radius: 24px;
+      padding: 10px 20px;
+      color: var(--cream-head);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      text-decoration: none;
+    }
+    .btn-back:hover { border-color: var(--cream-label); }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: none;
+      border-radius: 24px;
+      padding: 12px 28px;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-next:hover { opacity: 0.85; }
+    .btn-next:disabled { opacity: 0.3; cursor: default; }
+
+    .btn-confirm {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: none;
+      border-radius: 24px;
+      padding: 14px 32px;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-confirm:hover { opacity: 0.85; }
+    .btn-confirm:disabled { opacity: 0.4; cursor: default; }
+
+    /* ─── SUCCESS ─── */
+    .booking-result {
+      text-align: center;
+      padding: 48px 32px;
+    }
+
+    .booking-result__icon {
+      font-size: 52px;
+      color: var(--cream-label);
+      margin-bottom: 20px;
+    }
+
+    .booking-result__title {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: 28px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cream-head);
+      margin-bottom: 12px;
+    }
+
+    .booking-result__msg {
+      font-size: 15px;
+      color: var(--cream-body);
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 28px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid rgba(220,255,118,0.1);
+      padding: 20px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer__name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      font-size: 15px;
+      text-transform: uppercase;
+    }
+
+    .footer__copy { font-size: 14px; color: rgba(245,245,240,0.25); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 680px) {
+      main { padding: 68px 4% 48px; }
+      .panel { padding: 24px 18px; }
+
+      .step1-grid { grid-template-columns: 1fr; }
+      .treatment-col { border-right: none; padding-right: 0; border-bottom: 1px solid var(--cream-border); padding-bottom: 20px; margin-bottom: 4px; }
+      .treatment-list { max-height: 260px; }
+
+      .datetime-grid { grid-template-columns: 1fr; }
+      .confirm-meta { grid-template-columns: 1fr; }
+      .confirm-meta .confirm-row { border-right: none; }
+
+      .panel-actions { flex-wrap: wrap; gap: 10px; }
+      .btn-next, .btn-confirm { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" role="navigation" aria-label="Navigering">
+    <a href="index.html" class="nav__logo">
+      <span class="nav__logo-name">Magnus</span>
+      <span class="nav__logo-sub">Massageterapi</span>
+    </a>
+    <a href="index.html" class="nav__back">
+      <i class="ti ti-arrow-left" aria-hidden="true"></i>
+      Tillbaka till startsidan
+    </a>
+  </nav>
+</header>
+
+<main>
+  <div class="booking-wrap">
+
+    <!-- Step indicator -->
+    <nav class="steps" aria-label="Bokningssteg" id="stepIndicator">
+      <div class="step is-current" id="step-ind-1">
+        <div class="step__bubble" id="bubble-1">1</div>
+        <span class="step__label">Behandling</span>
+      </div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step" id="step-ind-2">
+        <div class="step__bubble" id="bubble-2">2</div>
+        <span class="step__label">Tid</span>
+      </div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step" id="step-ind-3">
+        <div class="step__bubble" id="bubble-3">3</div>
+        <span class="step__label">Uppgifter</span>
+      </div>
+      <div class="step-line" id="line-3"></div>
+      <div class="step" id="step-ind-4">
+        <div class="step__bubble" id="bubble-4">4</div>
+        <span class="step__label">Bekräfta</span>
+      </div>
+    </nav>
+
+    <!-- ─── STEP 1 ─── -->
+    <section class="panel is-active" id="panel-1" aria-labelledby="step1-title">
+      <h1 class="panel__title" id="step1-title">Välj behandling</h1>
+      <p class="panel__sub">Välj behandling till vänster och längd till höger</p>
+
+      <div class="step1-grid">
+
+        <!-- Left: treatment list -->
+        <div class="treatment-col">
+          <p class="treatment-col__label">Behandling</p>
+          <div class="treatment-list" id="treatmentList" role="listbox" aria-label="Behandlingar"></div>
+        </div>
+
+        <!-- Right: length + price -->
+        <div class="length-col" id="lengthCol">
+          <p class="length-col__label">Längd &amp; pris</p>
+          <div id="lengthContent">
+            <div class="length-placeholder">
+              <span>Välj en behandling<br>för att se tillgängliga längder</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="panel-actions">
+        <span></span>
+        <button class="btn-next" id="next1" disabled>
+          Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 2 ─── -->
+    <section class="panel" id="panel-2" aria-labelledby="step2-title">
+      <h2 class="panel__title" id="step2-title">Välj datum och tid</h2>
+      <p class="panel__sub">Välj en ledig tid som passar dig</p>
+
+      <div class="datetime-grid">
+        <div class="calendar-wrap">
+          <div class="cal-header">
+            <button class="cal-nav" id="calPrev" aria-label="Föregående månad"><i class="ti ti-chevron-left"></i></button>
+            <span class="cal-header__title" id="calTitle"></span>
+            <button class="cal-nav" id="calNext" aria-label="Nästa månad"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <div class="cal-grid" id="calGrid" role="grid"></div>
+        </div>
+
+        <div class="slots-wrap">
+          <p class="slots-wrap__label" id="slotsLabel">Välj ett datum</p>
+          <div id="slotsContainer">
+            <p class="slots-empty">Välj ett datum i kalendern för att se lediga tider</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn-back" id="back2"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
+        <button class="btn-next" id="next2" disabled>Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 3 ─── -->
+    <section class="panel" id="panel-3" aria-labelledby="step3-title">
+      <h2 class="panel__title" id="step3-title">Dina uppgifter</h2>
+      <p class="panel__sub">Fyll i dina kontaktuppgifter</p>
+
+      <div class="form-group">
+        <label for="field-name" class="form-label">Namn</label>
+        <input id="field-name" class="form-input" type="text" placeholder="Ditt namn" autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label for="field-email" class="form-label">E-post</label>
+        <input id="field-email" class="form-input" type="email" placeholder="din@email.se" autocomplete="email" />
+      </div>
+
+      <!-- Phone: present in code, hidden in UI per spec -->
+      <div class="form-group" style="display:none;" aria-hidden="true">
+        <label for="field-phone" class="form-label">Telefon</label>
+        <input id="field-phone" class="form-input" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" tabindex="-1" />
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn-back" id="back3"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
+        <button class="btn-next" id="next3" disabled>Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </section>
+
+    <!-- ─── STEP 4 ─── -->
+    <section class="panel" id="panel-4" aria-labelledby="step4-title">
+      <h2 class="panel__title" id="step4-title">Bekräfta bokning</h2>
+      <p class="panel__sub">Granska dina uppgifter innan du bekräftar</p>
+
+      <div class="confirm-card">
+        <div class="confirm-row">
+          <i class="confirm-row__icon ti ti-calendar" aria-hidden="true"></i>
+          <div>
+            <div class="confirm-row__value" id="conf-date"></div>
+            <div class="confirm-row__sub" id="conf-time"></div>
+          </div>
+        </div>
+        <div class="confirm-meta">
+          <div class="confirm-row">
+            <div>
+              <div class="confirm-row__label">Behandling</div>
+              <div class="confirm-row__value" id="conf-type"></div>
+            </div>
+          </div>
+          <div class="confirm-row">
+            <div>
+              <div class="confirm-row__label">Pris</div>
+              <div class="confirm-row__value" id="conf-price"></div>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-customer">
+          <div class="confirm-customer__label">Dina uppgifter</div>
+          <div class="confirm-customer__row"><span>Namn:</span><span id="conf-name"></span></div>
+          <div class="confirm-customer__row"><span>E-post:</span><span id="conf-email"></span></div>
+        </div>
+      </div>
+
+      <div class="panel-actions">
+        <button class="btn-back" id="back4"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
+        <button class="btn-confirm" id="btnConfirm">Boka nu, betala på plats</button>
+      </div>
+    </section>
+
+    <!-- ─── SUCCESS ─── -->
+    <section class="panel" id="panel-success" aria-live="polite">
+      <div class="booking-result">
+        <div class="booking-result__icon"><i class="ti ti-circle-check"></i></div>
+        <h2 class="booking-result__title">Bokning bekräftad!</h2>
+        <p class="booking-result__msg">
+          Tack! En bekräftelse har skickats till din e-post.<br>Vi ser fram emot att träffa dig.
+        </p>
+        <a href="index.html" class="btn-back">Tillbaka till startsidan</a>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <a href="index.html" class="nav__logo" style="text-decoration:none;">
+    <span class="nav__logo-name">Magnus</span>
+    <span class="nav__logo-sub">Massageterapi</span>
+  </a>
+  <span class="footer__copy">© 2026 · Alla rättigheter förbehållna</span>
+</footer>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const TREATMENTS = [
+  { name: 'Nybesök Fibromassage',               lengths: [90] },
+  { name: 'Fibromassage',                        lengths: [75] },
+  { name: 'Nybesök Lottorpsmetoden',             lengths: [75] },
+  { name: 'Lottorpsmetoden',                     lengths: [60] },
+  { name: 'Nybesök Fingerartros',                lengths: [30] },
+  { name: 'Fingerartros',                        lengths: [20] },
+  { name: 'Nybesök Medicinsk massageterapi',     lengths: [60] },
+  { name: 'Medicinsk massageterapi',             lengths: [60, 45, 30] },
+  { name: 'Avslappningsmassage',                 lengths: [90, 60, 45] },
+  { name: 'Nybesök Migrän eller huvudvärk',      lengths: [60] },
+  { name: 'Migrän eller huvudvärk',              lengths: [60, 45, 30] },
+  { name: 'Koppning',                            lengths: [45] },
+  { name: 'Klassisk svensk massage',             lengths: [60, 45] },
+];
+
+const PRICES = { 20: 340, 30: 590, 45: 690, 60: 890, 75: 1090, 90: 1290 };
+
+const SV_MONTHS = ['januari','februari','mars','april','maj','juni',
+  'juli','augusti','september','oktober','november','december'];
+const SV_DAYS_SHORT = ['Sö','Må','Ti','On','To','Fr','Lö'];
+const WEEKDAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
+
+const state = {
+  step: 1,
+  sessionType: null,
+  sessionLength: null,
+  date: null,
+  time: null,
+  name: '',
+  email: '',
+  phone: '',
+  schedule: null,   // null = not fetched yet; {} = fetched but empty (all open fallback)
+  calYear: 0,
+  calMonth: 0,
+};
+
+// ─── HELPERS ────────────────────────────────────────────────────────────────
+
+function formatPrice(mins) {
+  const p = PRICES[mins];
+  return p ? `${p.toLocaleString('sv-SE')} kr` : '';
+}
+
+function formatDateSv(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  const dayNames = ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'];
+  return `${dayNames[d.getUTCDay()]} ${d.getUTCDate()} ${SV_MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+}
+
+function toDateStr(y, m, d) {
+  return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+
+function todayStr() {
+  const d = new Date();
+  return toDateStr(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+// ─── STEP INDICATOR ─────────────────────────────────────────────────────────
+
+function updateStepIndicator(current) {
+  for (let i = 1; i <= 4; i++) {
+    const ind = document.getElementById(`step-ind-${i}`);
+    const bubble = document.getElementById(`bubble-${i}`);
+    ind.classList.remove('is-current', 'is-done');
+    if (i < current) {
+      ind.classList.add('is-done');
+      bubble.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i>';
+    } else if (i === current) {
+      ind.classList.add('is-current');
+      bubble.textContent = i;
+    } else {
+      bubble.textContent = i;
+    }
+    if (i < 4) {
+      document.getElementById(`line-${i}`).classList.toggle('is-done', i < current);
+    }
+  }
+}
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+
+function goTo(step) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('is-active'));
+  const id = step === 'success' ? 'panel-success' : `panel-${step}`;
+  document.getElementById(id).classList.add('is-active');
+  if (typeof step === 'number') {
+    state.step = step;
+    updateStepIndicator(step);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── STEP 1 ──────────────────────────────────────────────────────────────────
+
+function renderTreatments() {
+  const list = document.getElementById('treatmentList');
+  list.innerHTML = '';
+  TREATMENTS.forEach((t, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'treatment-item';
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-selected', 'false');
+    btn.dataset.index = i;
+    btn.innerHTML = `
+      <span class="treatment-item__check"></span>
+      <span class="treatment-item__name">${t.name}</span>`;
+    btn.addEventListener('click', () => selectTreatment(i));
+    list.appendChild(btn);
+  });
+}
+
+function selectTreatment(index) {
+  state.sessionType = TREATMENTS[index].name;
+  state.sessionLength = null;
+
+  document.querySelectorAll('.treatment-item').forEach((el, i) => {
+    const sel = i === index;
+    el.classList.toggle('is-selected', sel);
+    el.setAttribute('aria-selected', String(sel));
+  });
+
+  renderLengthContent(TREATMENTS[index]);
+}
+
+function renderLengthContent(t) {
+  const content = document.getElementById('lengthContent');
+
+  if (t.lengths.length === 1) {
+    state.sessionLength = t.lengths[0];
+    content.innerHTML = `
+      <div class="fixed-length-box">
+        <div class="fixed-length-box__row">
+          <span class="fixed-length-box__mins">${t.lengths[0]} min</span>
+          <span class="fixed-length-box__price">${formatPrice(t.lengths[0])}</span>
+        </div>
+        <div class="fixed-length-box__note">Fast längd för denna behandling</div>
+      </div>`;
+    document.getElementById('next1').disabled = false;
+  } else {
+    state.sessionLength = null;
+    const optionsHtml = t.lengths.map(mins => `
+      <button class="length-option" data-mins="${mins}">
+        <span class="length-option__mins">${mins} min</span>
+        <span class="length-option__price">${formatPrice(mins)}</span>
+      </button>`).join('');
+    content.innerHTML = `<div class="length-options">${optionsHtml}</div>`;
+
+    content.querySelectorAll('.length-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mins = parseInt(btn.dataset.mins);
+        state.sessionLength = mins;
+        content.querySelectorAll('.length-option').forEach(b =>
+          b.classList.toggle('is-selected', parseInt(b.dataset.mins) === mins));
+        document.getElementById('next1').disabled = false;
+      });
+    });
+
+    document.getElementById('next1').disabled = true;
+  }
+}
+
+// ─── STEP 2: CALENDAR ────────────────────────────────────────────────────────
+
+async function fetchSchedule() {
+  try {
+    const res = await fetch('/.netlify/functions/get-slots?mode=schedule');
+    if (!res.ok) throw new Error('bad status');
+    const rows = await res.json();
+    state.schedule = {};
+    rows.forEach(r => { state.schedule[r.weekday] = r; });
+  } catch {
+    // Fallback: treat schedule as empty object — all weekdays open
+    state.schedule = {};
+  }
+}
+
+function isWeekdayOpen(jsDay) {
+  const name = WEEKDAY_NAMES[jsDay];
+  // If schedule fetch failed or is empty, fall back to allowing all weekdays
+  if (!state.schedule || Object.keys(state.schedule).length === 0) return true;
+  const s = state.schedule[name];
+  return s && s.is_open;
+}
+
+function renderCalendar() {
+  const y = state.calYear;
+  const m = state.calMonth;
+  const today = todayStr();
+
+  const capMonth = SV_MONTHS[m].charAt(0).toUpperCase() + SV_MONTHS[m].slice(1);
+  document.getElementById('calTitle').textContent = `${capMonth} ${y}`;
+
+  const nowDate = new Date();
+  document.getElementById('calPrev').disabled =
+    y < nowDate.getFullYear() ||
+    (y === nowDate.getFullYear() && m <= nowDate.getMonth());
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  SV_DAYS_SHORT.forEach(name => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-name';
+    el.textContent = name;
+    el.setAttribute('aria-hidden', 'true');
+    grid.appendChild(el);
+  });
+
+  const firstDay = new Date(y, m, 1).getDay();
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-cell cal-cell--empty';
+    el.setAttribute('aria-hidden', 'true');
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = toDateStr(y, m, d);
+    const jsDay = new Date(y, m, d).getDay();
+    const isPast = dateStr < today;
+    const isOpen = isWeekdayOpen(jsDay);
+    const isToday = dateStr === today;
+    const isSelected = dateStr === state.date;
+
+    const btn = document.createElement('button');
+    btn.className = 'cal-cell';
+    btn.textContent = d;
+    btn.setAttribute('aria-label', `${d} ${SV_MONTHS[m]}`);
+
+    if (isToday) btn.classList.add('cal-cell--today');
+    if (isSelected) btn.classList.add('cal-cell--selected');
+
+    if (isPast || !isOpen) {
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', () => selectDate(dateStr));
+    }
+
+    grid.appendChild(btn);
+  }
+}
+
+async function selectDate(dateStr) {
+  state.date = dateStr;
+  state.time = null;
+  document.getElementById('next2').disabled = true;
+
+  // Remove any previous slot-taken error
+  const prev = document.getElementById('slotsContainer').parentElement.querySelector('.slot-err');
+  if (prev) prev.remove();
+
+  renderCalendar();
+
+  const d = new Date(dateStr + 'T12:00:00Z');
+  const dayName = ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'][d.getUTCDay()];
+  document.getElementById('slotsLabel').textContent =
+    `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${d.getUTCDate()} ${SV_MONTHS[d.getUTCMonth()]}`;
+
+  document.getElementById('slotsContainer').innerHTML =
+    `<div class="slots-loading"><div class="spinner"></div> Hämtar tider…</div>`;
+
+  try {
+    const res = await fetch(`/.netlify/functions/get-slots?date=${dateStr}&session_length=${state.sessionLength}`);
+    if (!res.ok) throw new Error('bad status');
+    const data = await res.json();
+    renderSlots(data.slots || []);
+  } catch {
+    document.getElementById('slotsContainer').innerHTML =
+      `<p class="slots-empty">Kunde inte hämta tider just nu. Kontrollera din anslutning och försök igen.</p>`;
+  }
+}
+
+function renderSlots(slots) {
+  const container = document.getElementById('slotsContainer');
+  if (!slots.length) {
+    container.innerHTML = `<p class="slots-empty">Inga lediga tider denna dag</p>`;
+    return;
+  }
+  const grid = document.createElement('div');
+  grid.className = 'slots-grid';
+  grid.setAttribute('role', 'listbox');
+  grid.setAttribute('aria-label', 'Lediga tider');
+  slots.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'slot-pill';
+    btn.textContent = t;
+    btn.setAttribute('role', 'option');
+    btn.setAttribute('aria-selected', 'false');
+    btn.addEventListener('click', () => selectTime(t));
+    grid.appendChild(btn);
+  });
+  container.innerHTML = '';
+  container.appendChild(grid);
+}
+
+function selectTime(t) {
+  state.time = t;
+  document.querySelectorAll('.slot-pill').forEach(el => {
+    const sel = el.textContent === t;
+    el.classList.toggle('is-selected', sel);
+    el.setAttribute('aria-selected', String(sel));
+  });
+  document.getElementById('next2').disabled = false;
+}
+
+// ─── STEP 3 ──────────────────────────────────────────────────────────────────
+
+function validateStep3() {
+  const name = document.getElementById('field-name').value.trim();
+  const email = document.getElementById('field-email').value.trim();
+  document.getElementById('next3').disabled =
+    !(name.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+}
+
+// ─── STEP 4 ──────────────────────────────────────────────────────────────────
+
+function populateConfirm() {
+  document.getElementById('conf-date').textContent = formatDateSv(state.date);
+  document.getElementById('conf-time').textContent = `${state.time} (${state.sessionLength} min)`;
+  document.getElementById('conf-type').textContent = state.sessionType;
+  document.getElementById('conf-price').textContent = formatPrice(state.sessionLength);
+  document.getElementById('conf-name').textContent = state.name;
+  document.getElementById('conf-email').textContent = state.email;
+}
+
+async function submitBooking() {
+  const btn = document.getElementById('btnConfirm');
+  btn.disabled = true;
+  btn.textContent = 'Bokar…';
+
+  try {
+    const res = await fetch('/.netlify/functions/book-slot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date: state.date,
+        start_time: state.time,
+        session_type: state.sessionType,
+        session_length: state.sessionLength,
+        customer_name: state.name,
+        customer_email: state.email,
+        customer_phone: state.phone,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.error === 'slot_taken') {
+      goTo(2);
+      state.time = null;
+      document.getElementById('next2').disabled = true;
+
+      const wrap = document.getElementById('slotsContainer').parentElement;
+      const existing = wrap.querySelector('.slot-err');
+      if (existing) existing.remove();
+      const errBanner = document.createElement('p');
+      errBanner.className = 'slot-err';
+      errBanner.textContent = 'Den här tiden togs precis av någon annan — välj en ny tid.';
+      wrap.insertBefore(errBanner, document.getElementById('slotsContainer'));
+
+      if (state.date) selectDate(state.date);
+
+      btn.disabled = false;
+      btn.textContent = 'Boka nu, betala på plats';
+      return;
+    }
+
+    if (!data.success) throw new Error('Unexpected response');
+    goTo('success');
+
+  } catch {
+    btn.disabled = false;
+    btn.textContent = 'Boka nu, betala på plats';
+    alert('Något gick fel. Försök igen om en stund.');
+  }
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+
+async function init() {
+  renderTreatments();
+
+  const now = new Date();
+  state.calYear = now.getFullYear();
+  state.calMonth = now.getMonth();
+
+  // Fetch schedule; render calendar once done (or on fallback)
+  await fetchSchedule();
+  renderCalendar();
+
+  document.getElementById('next1').addEventListener('click', () => goTo(2));
+  document.getElementById('back2').addEventListener('click', () => goTo(1));
+  document.getElementById('next2').addEventListener('click', () => goTo(3));
+
+  document.getElementById('calPrev').addEventListener('click', () => {
+    if (state.calMonth === 0) { state.calYear--; state.calMonth = 11; }
+    else state.calMonth--;
+    renderCalendar();
+  });
+  document.getElementById('calNext').addEventListener('click', () => {
+    if (state.calMonth === 11) { state.calYear++; state.calMonth = 0; }
+    else state.calMonth++;
+    renderCalendar();
+  });
+
+  document.getElementById('back3').addEventListener('click', () => goTo(2));
+  document.getElementById('next3').addEventListener('click', () => {
+    state.name = document.getElementById('field-name').value.trim();
+    state.email = document.getElementById('field-email').value.trim();
+    state.phone = document.getElementById('field-phone').value.trim();
+    populateConfirm();
+    goTo(4);
+  });
+
+  document.getElementById('field-name').addEventListener('input', validateStep3);
+  document.getElementById('field-email').addEventListener('input', validateStep3);
+
+  document.getElementById('back4').addEventListener('click', () => goTo(3));
+  document.getElementById('btnConfirm').addEventListener('click', submitBooking);
+}
+
+init();
+</script>
+</body>
+</html>
