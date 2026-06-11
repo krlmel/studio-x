@@ -52,29 +52,35 @@ exports.handler = async (event) => {
     }
 
     const sessionMins = parseInt(session_length, 10);
+    console.log(`[get-slots] date=${date} session_length=${sessionMins}`);
 
     // Weekday name from date
     const d = new Date(date + 'T12:00:00Z');
     const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const weekday = weekdays[d.getUTCDay()];
+    console.log(`[get-slots] weekday resolved to: ${weekday}`);
 
     // Fetch schedule for this weekday
     const scheduleRows = await supabaseGet(
       `schedule?weekday=eq.${weekday}&select=is_open,open_time,close_time`
     );
+    console.log(`[get-slots] schedule rows:`, JSON.stringify(scheduleRows));
 
     if (!scheduleRows.length || !scheduleRows[0].is_open) {
+      console.log(`[get-slots] day is closed or not found — returning empty slots`);
       return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ slots: [], schedule: null }) };
     }
 
     const schedule = scheduleRows[0];
     const openMins = timeToMins(schedule.open_time);
     const closeMins = timeToMins(schedule.close_time);
+    console.log(`[get-slots] open=${schedule.open_time} (${openMins} min) close=${schedule.close_time} (${closeMins} min)`);
 
     // Fetch existing bookings/blocks for this date
     const bookingRows = await supabaseGet(
       `bookings?date=eq.${date}&select=start_time,end_time,type`
     );
+    console.log(`[get-slots] booking rows for ${date}:`, JSON.stringify(bookingRows));
 
     // Build blocked periods
     const blocked = bookingRows.map((b) => {
@@ -114,6 +120,7 @@ exports.handler = async (event) => {
     }
 
     const sorted = Array.from(slots).sort((a, b) => a - b).map(minsToTime);
+    console.log(`[get-slots] computed slots (${sorted.length}):`, JSON.stringify(sorted));
     return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ slots: sorted }) };
 
   } catch (err) {
