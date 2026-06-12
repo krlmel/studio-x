@@ -61,7 +61,7 @@ async function sendEmail({ to, subject, html }) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Magnus Massageterapi <bokningar@placeholder-domain.se>',
+      from: 'Magnus Massageterapi <bokningar@magnusmassage.se>',
       to,
       subject,
       html,
