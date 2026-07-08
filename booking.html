@@ -227,6 +227,8 @@
     }
 
     .duration-pill {
+      position: relative;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -247,7 +249,7 @@
 
     .duration-pill.is-selected {
       border-color: var(--bg);
-      background: rgba(15,31,22,0.06);
+      background: var(--bg);
     }
 
     .duration-pill__mins {
@@ -262,7 +264,36 @@
       color: var(--cream-body);
     }
 
-    .duration-pill.is-selected .duration-pill__price { color: var(--cream-label); }
+    .duration-pill.is-selected .duration-pill__mins,
+    .duration-pill.is-selected .duration-pill__price { color: #ffffff; }
+
+    /* Duration not offered for the currently chosen treatment */
+    .duration-pill.is-unavailable {
+      cursor: not-allowed;
+      background: var(--cream-input);
+      border-color: var(--cream-border);
+    }
+
+    .duration-pill.is-unavailable:hover {
+      border-color: var(--cream-border);
+      background: var(--cream-input);
+    }
+
+    .duration-pill.is-unavailable .duration-pill__mins,
+    .duration-pill.is-unavailable .duration-pill__price {
+      color: var(--cream-muted);
+    }
+
+    .duration-pill.is-unavailable::after {
+      content: '';
+      position: absolute;
+      left: 6%;
+      right: 6%;
+      top: 50%;
+      height: 2px;
+      background: var(--cream-muted);
+      transform: translateY(-50%) rotate(-12deg);
+    }
 
     /* ─── CALENDAR GATE PLACEHOLDER ─── */
     .length-placeholder {
@@ -1141,6 +1172,53 @@ function renderTreatmentSelect() {
   select.innerHTML = '<option value="">Ospecificerad</option>' +
     options.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
   select.value = state.sessionType || '';
+
+  updateDurationAvailability();
+}
+
+// Grey out (and disable) duration pills the currently chosen treatment doesn't offer.
+function updateDurationAvailability() {
+  const treatment = state.sessionType ? TREATMENTS.find(t => t.name === state.sessionType) : null;
+  document.querySelectorAll('.duration-pill').forEach(btn => {
+    const mins = parseInt(btn.dataset.mins, 10);
+    const unavailable = !!treatment && !treatment.lengths.includes(mins);
+    btn.classList.toggle('is-unavailable', unavailable);
+    btn.disabled = unavailable;
+    btn.setAttribute('aria-disabled', String(unavailable));
+  });
+}
+
+function handleTreatmentChange(value) {
+  state.sessionType = value || null;
+  updateDurationAvailability();
+
+  const treatment = state.sessionType ? TREATMENTS.find(t => t.name === state.sessionType) : null;
+  if (treatment && state.sessionLength && !treatment.lengths.includes(state.sessionLength)) {
+    resetDurationSelection();
+  }
+}
+
+// Clears an already-picked duration (and the date/time that depend on it) when it's
+// no longer valid for the newly chosen treatment.
+function resetDurationSelection() {
+  state.sessionLength = null;
+  state.date = null;
+  state.time = null;
+
+  document.querySelectorAll('.duration-pill').forEach(btn => btn.classList.remove('is-selected'));
+
+  document.getElementById('calendarPlaceholder').style.display = 'flex';
+  document.getElementById('datetimeGrid').style.display = 'none';
+
+  document.getElementById('slotsLabel').textContent = 'Välj ett datum';
+  document.getElementById('calToggleLabel').textContent = 'Välj datum';
+  document.getElementById('slotsContainer').innerHTML =
+    '<p class="slots-empty">Välj ett datum i kalendern för att se lediga tider</p>';
+
+  const errBanner = document.getElementById('slotsContainer').parentElement.querySelector('.slot-err');
+  if (errBanner) errBanner.remove();
+
+  updateNext1Gate();
 }
 
 // ─── STEP 1c: CALENDAR ───────────────────────────────────────────────────────
@@ -1454,6 +1532,7 @@ function applyPrefill() {
     if (matches) {
       select.value = prefTreatment;
       state.sessionType = prefTreatment;
+      updateDurationAvailability();
     }
   }
 }
@@ -1475,7 +1554,7 @@ async function init() {
   applyPrefill();
 
   document.getElementById('treatmentSelect').addEventListener('change', (e) => {
-    state.sessionType = e.target.value || null;
+    handleTreatmentChange(e.target.value);
   });
 
   document.getElementById('next1').addEventListener('click', () => goTo(2));
