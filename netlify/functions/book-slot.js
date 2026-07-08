@@ -73,6 +73,12 @@ async function sendEmail({ to, subject, html }) {
   }
 }
 
+const MAX_ADVANCE_DAYS = 31; // furthest a booking can be made ahead of today — keep in sync with booking.html
+
+function toUtcDateStr(d) {
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
 function formatDateSv(dateStr) {
   const d = new Date(dateStr + 'T12:00:00Z');
   const days = ['söndag', 'måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag', 'lördag'];
@@ -100,6 +106,16 @@ exports.handler = async (event) => {
 
   if (!date || !start_time || !session_type || !session_length || !customer_name || !customer_email) {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Missing required fields' }) };
+  }
+
+  const now = new Date();
+  const todayStr = toUtcDateStr(now);
+  const maxDate = new Date(now);
+  maxDate.setUTCDate(maxDate.getUTCDate() + MAX_ADVANCE_DAYS);
+  const maxDateStr = toUtcDateStr(maxDate);
+
+  if (date < todayStr || date > maxDateStr) {
+    return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'date_out_of_range' }) };
   }
 
   const trimmedMessage = typeof customer_message === 'string' ? customer_message.trim().slice(0, 150) : '';

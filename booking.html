@@ -292,6 +292,27 @@
       padding: 20px;
     }
 
+    /* ─── MOBILE CALENDAR TOGGLE ─── */
+    .cal-toggle {
+      display: none;
+      width: 100%;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border: 1px solid var(--cream-border);
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--cream-card);
+      color: var(--cream-head);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .cal-toggle i { font-size: 16px; color: var(--cream-label); }
+
+    .cal-body { display: block; }
+
     .cal-header {
       display: flex;
       align-items: center;
@@ -723,6 +744,10 @@
 
       .panel-actions { flex-wrap: wrap; gap: 10px; }
       .btn-next, .btn-confirm { flex: 1; justify-content: center; }
+
+      .cal-toggle { display: flex; }
+      .cal-body { display: none; margin-top: 14px; }
+      .cal-body.is-open { display: block; }
     }
   </style>
 </head>
@@ -767,18 +792,18 @@
       <h1 class="panel__title" id="step1-title">Välj tid &amp; behandling</h1>
       <p class="panel__sub">Välj längd, behandling (valfritt) och en ledig tid</p>
 
-      <!-- 1a: Length & price -->
-      <div class="subsection">
-        <span class="subsection__label">Längd &amp; pris</span>
-        <div class="duration-grid" id="durationGrid" role="listbox" aria-label="Längd"></div>
-      </div>
-
-      <!-- 1b: Treatment type (optional) -->
+      <!-- 1a: Treatment type (optional) -->
       <div class="subsection">
         <label class="subsection__label" for="treatmentSelect">Typ av behandling <span class="subsection__optional">(valfritt)</span></label>
         <select class="form-input" id="treatmentSelect">
           <option value="">Ospecificerad</option>
         </select>
+      </div>
+
+      <!-- 1b: Length & price -->
+      <div class="subsection">
+        <span class="subsection__label">Längd &amp; pris</span>
+        <div class="duration-grid" id="durationGrid" role="listbox" aria-label="Längd"></div>
       </div>
 
       <!-- 1c: Calendar + slots -->
@@ -789,12 +814,18 @@
         </div>
         <div class="datetime-grid" id="datetimeGrid" style="display:none;">
           <div class="calendar-wrap">
-            <div class="cal-header">
-              <button class="cal-nav" id="calPrev" aria-label="Föregående månad"><i class="ti ti-chevron-left"></i></button>
-              <span class="cal-header__title" id="calTitle"></span>
-              <button class="cal-nav" id="calNext" aria-label="Nästa månad"><i class="ti ti-chevron-right"></i></button>
+            <button class="cal-toggle" id="calToggle" aria-expanded="false" aria-controls="calBody">
+              <i class="ti ti-calendar" aria-hidden="true"></i>
+              <span id="calToggleLabel">Välj datum</span>
+            </button>
+            <div class="cal-body" id="calBody">
+              <div class="cal-header">
+                <button class="cal-nav" id="calPrev" aria-label="Föregående månad"><i class="ti ti-chevron-left"></i></button>
+                <span class="cal-header__title" id="calTitle"></span>
+                <button class="cal-nav" id="calNext" aria-label="Nästa månad"><i class="ti ti-chevron-right"></i></button>
+              </div>
+              <div class="cal-grid" id="calGrid" role="grid"></div>
             </div>
-            <div class="cal-grid" id="calGrid" role="grid"></div>
           </div>
 
           <div class="slots-wrap">
@@ -932,8 +963,9 @@ const ALL_DURATIONS = Object.keys(PRICES).map(Number);
 
 const SV_MONTHS = ['januari','februari','mars','april','maj','juni',
   'juli','augusti','september','oktober','november','december'];
-const SV_DAYS_SHORT = ['Sö','Må','Ti','On','To','Fr','Lö'];
+const SV_DAYS_SHORT = ['Må','Ti','On','To','Fr','Lö','Sö'];
 const WEEKDAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+const MAX_ADVANCE_DAYS = 31; // furthest a booking can be made ahead of today
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
 
@@ -1045,7 +1077,54 @@ function selectDuration(mins) {
   updateNext1Gate();
 
   // If a date was already picked, refresh slots for the new duration.
-  if (state.date) selectDate(state.date);
+  // Otherwise, jump straight to the first date that actually has openings.
+  if (state.date) {
+    selectDate(state.date);
+  } else {
+    autoSelectFirstAvailableDate();
+  }
+}
+
+async function autoSelectFirstAvailableDate() {
+  const sessionLength = state.sessionLength;
+  const candidates = [];
+  const today = new Date();
+  for (let i = 0; i <= MAX_ADVANCE_DAYS; i++) {
+    const d = new Date(today);
+    d.setDate(d.getDate() + i);
+    if (!isWeekdayOpen(d.getDay())) continue;
+    candidates.push(toDateStr(d.getFullYear(), d.getMonth(), d.getDate()));
+  }
+
+  let results;
+  try {
+    results = await Promise.all(candidates.map(async dateStr => {
+      try {
+        const res = await fetch(`/.netlify/functions/get-slots?date=${dateStr}&session_length=${sessionLength}`);
+        if (!res.ok) return { dateStr, slots: [] };
+        const data = await res.json();
+        return { dateStr, slots: data.slots || [] };
+      } catch {
+        return { dateStr, slots: [] };
+      }
+    }));
+  } catch {
+    return;
+  }
+
+  // Bail if the user picked a date manually or changed duration while these were in flight
+  if (state.date || state.sessionLength !== sessionLength) return;
+
+  const first = results
+    .filter(r => r.slots.length > 0)
+    .sort((a, b) => a.dateStr.localeCompare(b.dateStr))[0];
+  if (!first) return;
+
+  const d = new Date(first.dateStr + 'T12:00:00Z');
+  state.calYear = d.getUTCFullYear();
+  state.calMonth = d.getUTCMonth();
+  renderCalendar();
+  selectDate(first.dateStr);
 }
 
 // ─── STEP 1b: TREATMENT TYPE (OPTIONAL) ─────────────────────────────────────
@@ -1100,6 +1179,13 @@ function renderCalendar() {
     y < nowDate.getFullYear() ||
     (y === nowDate.getFullYear() && m <= nowDate.getMonth());
 
+  const maxDate = new Date(nowDate);
+  maxDate.setDate(maxDate.getDate() + MAX_ADVANCE_DAYS);
+  const maxDateStr = toDateStr(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+  document.getElementById('calNext').disabled =
+    y > maxDate.getFullYear() ||
+    (y === maxDate.getFullYear() && m >= maxDate.getMonth());
+
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
 
@@ -1111,7 +1197,8 @@ function renderCalendar() {
     grid.appendChild(el);
   });
 
-  const firstDay = new Date(y, m, 1).getDay();
+  // Grid starts on Monday, but Date#getDay() is Sunday-indexed (0=Sun..6=Sat) — shift it.
+  const firstDay = (new Date(y, m, 1).getDay() + 6) % 7;
   const daysInMonth = new Date(y, m + 1, 0).getDate();
 
   for (let i = 0; i < firstDay; i++) {
@@ -1125,6 +1212,7 @@ function renderCalendar() {
     const dateStr = toDateStr(y, m, d);
     const jsDay = new Date(y, m, d).getDay();
     const isPast = dateStr < today;
+    const isTooFarAhead = dateStr > maxDateStr;
     const isOpen = isWeekdayOpen(jsDay);
     const isToday = dateStr === today;
     const isSelected = dateStr === state.date;
@@ -1137,7 +1225,7 @@ function renderCalendar() {
     if (isToday) btn.classList.add('cal-cell--today');
     if (isSelected) btn.classList.add('cal-cell--selected');
 
-    if (isPast || !isOpen) {
+    if (isPast || isTooFarAhead || !isOpen) {
       btn.disabled = true;
     } else {
       btn.addEventListener('click', () => selectDate(dateStr));
@@ -1160,8 +1248,11 @@ async function selectDate(dateStr) {
 
   const d = new Date(dateStr + 'T12:00:00Z');
   const dayName = ['söndag','måndag','tisdag','onsdag','torsdag','fredag','lördag'][d.getUTCDay()];
-  document.getElementById('slotsLabel').textContent =
-    `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${d.getUTCDate()} ${SV_MONTHS[d.getUTCMonth()]}`;
+  const label = `${dayName.charAt(0).toUpperCase() + dayName.slice(1)} ${d.getUTCDate()} ${SV_MONTHS[d.getUTCMonth()]}`;
+  document.getElementById('slotsLabel').textContent = label;
+  document.getElementById('calToggleLabel').textContent = label;
+  document.getElementById('calToggle').setAttribute('aria-expanded', 'false');
+  document.getElementById('calBody').classList.remove('is-open');
 
   document.getElementById('slotsContainer').innerHTML =
     `<div class="slots-loading"><div class="spinner"></div> Hämtar tider…</div>`;
@@ -1388,6 +1479,12 @@ async function init() {
   });
 
   document.getElementById('next1').addEventListener('click', () => goTo(2));
+
+  document.getElementById('calToggle').addEventListener('click', () => {
+    const body = document.getElementById('calBody');
+    const isOpen = body.classList.toggle('is-open');
+    document.getElementById('calToggle').setAttribute('aria-expanded', String(isOpen));
+  });
 
   document.getElementById('calPrev').addEventListener('click', () => {
     if (state.calMonth === 0) { state.calYear--; state.calMonth = 11; }
