@@ -37,7 +37,7 @@
       flex-direction: column;
     }
 
-    a:focus-visible, button:focus-visible, input:focus-visible {
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
       outline: 2px solid var(--cream-label);
       outline-offset: 3px;
     }
@@ -196,20 +196,13 @@
       margin-bottom: 28px;
     }
 
-    /* ─── STEP 1: 2-COLUMN ─── */
-    .step1-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      min-height: 380px;
+    /* ─── STEP 1: SUBSECTIONS ─── */
+    .subsection {
+      margin-bottom: 28px;
     }
 
-    .treatment-col {
-      border-right: 1px solid var(--cream-border);
-      padding-right: 24px;
-    }
-
-    .treatment-col__label {
+    .subsection__label {
+      display: block;
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -218,182 +211,71 @@
       font-weight: 700;
     }
 
-    .treatment-list {
+    .subsection__optional {
+      text-transform: none;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--cream-muted);
+      margin-left: 4px;
+    }
+
+    /* ─── 1a: DURATION PILLS ─── */
+    .duration-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .duration-pill {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    /* subtle scrollbar */
-    .treatment-list::-webkit-scrollbar { width: 4px; }
-    .treatment-list::-webkit-scrollbar-track { background: transparent; }
-    .treatment-list::-webkit-scrollbar-thumb { background: var(--cream-border); border-radius: 4px; }
-
-    .treatment-item {
-      display: flex;
       align-items: center;
-      padding: 10px 14px;
+      gap: 2px;
+      padding: 12px 18px;
       border: 1px solid var(--cream-border);
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
       background: transparent;
-      color: var(--cream-head);
-      text-align: left;
-      width: 100%;
       font-family: 'DM Sans', sans-serif;
-      gap: 8px;
+      transition: border-color 0.15s, background 0.15s;
     }
 
-    .treatment-item:hover {
+    .duration-pill:hover {
       border-color: var(--cream-label);
       background: rgba(45,82,64,0.04);
     }
 
-    .treatment-item.is-selected {
+    .duration-pill.is-selected {
       border-color: var(--bg);
       background: rgba(15,31,22,0.06);
     }
 
-    .treatment-item__check {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      border: 2px solid var(--cream-border);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .treatment-item.is-selected .treatment-item__check {
-      background: var(--bg);
-      border-color: var(--bg);
-    }
-
-    .treatment-item.is-selected .treatment-item__check::after {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .treatment-item__name {
-      font-size: 14px;
-      font-weight: 500;
-      flex: 1;
-      line-height: 1.3;
-    }
-
-    /* ─── LENGTH / PRICE COLUMN ─── */
-    .length-col {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .length-col__label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--cream-label);
-      margin-bottom: 10px;
+    .duration-pill__mins {
+      font-size: 15px;
       font-weight: 700;
+      color: var(--cream-head);
     }
 
+    .duration-pill__price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream-body);
+    }
+
+    .duration-pill.is-selected .duration-pill__price { color: var(--cream-label); }
+
+    /* ─── CALENDAR GATE PLACEHOLDER ─── */
     .length-placeholder {
-      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       color: var(--cream-muted);
       font-size: 14px;
-      padding: 24px;
-    }
-
-    .length-options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .length-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
+      padding: 40px 24px;
+      background: var(--cream);
       border: 1px solid var(--cream-border);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: border-color 0.15s, background 0.15s;
-      background: transparent;
-      color: var(--cream-head);
-      font-family: 'DM Sans', sans-serif;
-      text-align: left;
-      width: 100%;
-    }
-
-    .length-option:hover {
-      border-color: var(--cream-label);
-      background: rgba(45,82,64,0.04);
-    }
-
-    .length-option.is-selected {
-      border-color: var(--bg);
-      background: rgba(15,31,22,0.06);
-    }
-
-    .length-option__mins {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--cream-head);
-    }
-
-    .length-option__price {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--cream-body);
-    }
-
-    .length-option.is-selected .length-option__price {
-      color: var(--cream-label);
-    }
-
-    /* Single fixed length */
-    .fixed-length-box {
-      padding: 14px 16px;
-      background: rgba(45,82,64,0.06);
-      border: 1px solid rgba(45,82,64,0.2);
-      border-radius: 8px;
-    }
-
-    .fixed-length-box__row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .fixed-length-box__mins {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--cream-head);
-    }
-
-    .fixed-length-box__price {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--cream-label);
-    }
-
-    .fixed-length-box__note {
-      font-size: 12px;
-      color: var(--cream-muted);
-      margin-top: 4px;
+      border-radius: 12px;
     }
 
     /* ─── CALENDAR + SLOTS ─── */
@@ -546,6 +428,19 @@
       line-height: 1.5;
     }
 
+    .alt-duration-note {
+      font-size: 14px;
+      color: var(--cream-muted);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .alt-duration-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .slots-loading {
       font-size: 14px;
       color: var(--cream-muted);
@@ -572,7 +467,7 @@
       line-height: 1.5;
     }
 
-    /* ─── FORM (STEP 3) ─── */
+    /* ─── FORM (STEP 2) ─── */
     .form-group { margin-bottom: 20px; }
 
     .form-label {
@@ -583,6 +478,14 @@
       color: var(--cream-label);
       font-weight: 700;
       margin-bottom: 8px;
+    }
+
+    .form-label__optional {
+      text-transform: none;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--cream-muted);
+      margin-left: 4px;
     }
 
     .form-input {
@@ -601,7 +504,19 @@
     .form-input::placeholder { color: var(--cream-muted); }
     .form-input:focus { border-color: var(--cream-label); }
 
-    /* ─── CONFIRM (STEP 4) ─── */
+    textarea.form-input {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .char-counter {
+      text-align: right;
+      font-size: 12px;
+      color: var(--cream-muted);
+      margin-top: 4px;
+    }
+
+    /* ─── CONFIRM (STEP 3) ─── */
     .confirm-card {
       background: var(--cream);
       border: 1px solid var(--cream-border);
@@ -802,10 +717,6 @@
       main { padding: 68px 4% 48px; }
       .panel { padding: 24px 18px; }
 
-      .step1-grid { grid-template-columns: 1fr; }
-      .treatment-col { border-right: none; padding-right: 0; border-bottom: 1px solid var(--cream-border); padding-bottom: 20px; margin-bottom: 4px; }
-      .treatment-list { max-height: 260px; }
-
       .datetime-grid { grid-template-columns: 1fr; }
       .confirm-meta { grid-template-columns: 1fr; }
       .confirm-meta .confirm-row { border-right: none; }
@@ -837,48 +748,62 @@
     <nav class="steps" aria-label="Bokningssteg" id="stepIndicator">
       <div class="step is-current" id="step-ind-1">
         <div class="step__bubble" id="bubble-1">1</div>
-        <span class="step__label">Behandling</span>
+        <span class="step__label">Tid &amp; behandling</span>
       </div>
       <div class="step-line" id="line-1"></div>
       <div class="step" id="step-ind-2">
         <div class="step__bubble" id="bubble-2">2</div>
-        <span class="step__label">Tid</span>
+        <span class="step__label">Uppgifter</span>
       </div>
       <div class="step-line" id="line-2"></div>
       <div class="step" id="step-ind-3">
         <div class="step__bubble" id="bubble-3">3</div>
-        <span class="step__label">Uppgifter</span>
-      </div>
-      <div class="step-line" id="line-3"></div>
-      <div class="step" id="step-ind-4">
-        <div class="step__bubble" id="bubble-4">4</div>
         <span class="step__label">Bekräfta</span>
       </div>
     </nav>
 
-    <!-- ─── STEP 1 ─── -->
+    <!-- ─── STEP 1: TID & BEHANDLING ─── -->
     <section class="panel is-active" id="panel-1" aria-labelledby="step1-title">
-      <h1 class="panel__title" id="step1-title">Välj behandling</h1>
-      <p class="panel__sub">Välj behandling till vänster och längd till höger</p>
+      <h1 class="panel__title" id="step1-title">Välj tid &amp; behandling</h1>
+      <p class="panel__sub">Välj längd, behandling (valfritt) och en ledig tid</p>
 
-      <div class="step1-grid">
+      <!-- 1a: Length & price -->
+      <div class="subsection">
+        <span class="subsection__label">Längd &amp; pris</span>
+        <div class="duration-grid" id="durationGrid" role="listbox" aria-label="Längd"></div>
+      </div>
 
-        <!-- Left: treatment list -->
-        <div class="treatment-col">
-          <p class="treatment-col__label">Behandling</p>
-          <div class="treatment-list" id="treatmentList" role="listbox" aria-label="Behandlingar"></div>
+      <!-- 1b: Treatment type (optional) -->
+      <div class="subsection">
+        <label class="subsection__label" for="treatmentSelect">Typ av behandling <span class="subsection__optional">(valfritt)</span></label>
+        <select class="form-input" id="treatmentSelect">
+          <option value="">Ospecificerad</option>
+        </select>
+      </div>
+
+      <!-- 1c: Calendar + slots -->
+      <div class="subsection" style="margin-bottom: 0;">
+        <span class="subsection__label">Datum &amp; tid</span>
+        <div class="length-placeholder" id="calendarPlaceholder">
+          <span>Välj längd för att se lediga tider</span>
         </div>
+        <div class="datetime-grid" id="datetimeGrid" style="display:none;">
+          <div class="calendar-wrap">
+            <div class="cal-header">
+              <button class="cal-nav" id="calPrev" aria-label="Föregående månad"><i class="ti ti-chevron-left"></i></button>
+              <span class="cal-header__title" id="calTitle"></span>
+              <button class="cal-nav" id="calNext" aria-label="Nästa månad"><i class="ti ti-chevron-right"></i></button>
+            </div>
+            <div class="cal-grid" id="calGrid" role="grid"></div>
+          </div>
 
-        <!-- Right: length + price -->
-        <div class="length-col" id="lengthCol">
-          <p class="length-col__label">Längd &amp; pris</p>
-          <div id="lengthContent">
-            <div class="length-placeholder">
-              <span>Välj en behandling<br>för att se tillgängliga längder</span>
+          <div class="slots-wrap">
+            <p class="slots-wrap__label" id="slotsLabel">Välj ett datum</p>
+            <div id="slotsContainer">
+              <p class="slots-empty">Välj ett datum i kalendern för att se lediga tider</p>
             </div>
           </div>
         </div>
-
       </div>
 
       <div class="panel-actions">
@@ -889,38 +814,9 @@
       </div>
     </section>
 
-    <!-- ─── STEP 2 ─── -->
+    <!-- ─── STEP 2: UPPGIFTER ─── -->
     <section class="panel" id="panel-2" aria-labelledby="step2-title">
-      <h2 class="panel__title" id="step2-title">Välj datum och tid</h2>
-      <p class="panel__sub">Välj en ledig tid som passar dig</p>
-
-      <div class="datetime-grid">
-        <div class="calendar-wrap">
-          <div class="cal-header">
-            <button class="cal-nav" id="calPrev" aria-label="Föregående månad"><i class="ti ti-chevron-left"></i></button>
-            <span class="cal-header__title" id="calTitle"></span>
-            <button class="cal-nav" id="calNext" aria-label="Nästa månad"><i class="ti ti-chevron-right"></i></button>
-          </div>
-          <div class="cal-grid" id="calGrid" role="grid"></div>
-        </div>
-
-        <div class="slots-wrap">
-          <p class="slots-wrap__label" id="slotsLabel">Välj ett datum</p>
-          <div id="slotsContainer">
-            <p class="slots-empty">Välj ett datum i kalendern för att se lediga tider</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel-actions">
-        <button class="btn-back" id="back2"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
-        <button class="btn-next" id="next2" disabled>Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
-      </div>
-    </section>
-
-    <!-- ─── STEP 3 ─── -->
-    <section class="panel" id="panel-3" aria-labelledby="step3-title">
-      <h2 class="panel__title" id="step3-title">Dina uppgifter</h2>
+      <h2 class="panel__title" id="step2-title">Dina uppgifter</h2>
       <p class="panel__sub">Fyll i dina kontaktuppgifter</p>
 
       <div class="form-group">
@@ -933,21 +829,26 @@
         <input id="field-email" class="form-input" type="email" placeholder="din@email.se" autocomplete="email" />
       </div>
 
-      <!-- Phone: present in code, hidden in UI per spec -->
-      <div class="form-group" style="display:none;" aria-hidden="true">
-        <label for="field-phone" class="form-label">Telefon</label>
-        <input id="field-phone" class="form-input" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" tabindex="-1" />
+      <div class="form-group">
+        <label for="field-phone" class="form-label">Telefon <span class="form-label__optional">(valfritt)</span></label>
+        <input id="field-phone" class="form-input" type="tel" placeholder="07XX XXX XXX" autocomplete="tel" />
+      </div>
+
+      <div class="form-group">
+        <label for="field-message" class="form-label">Meddelande <span class="form-label__optional">(valfritt)</span></label>
+        <textarea id="field-message" class="form-input" maxlength="150" rows="3" placeholder="T.ex. allergier eller annat du vill att jag vet innan besöket."></textarea>
+        <div class="char-counter" id="messageCounter">0/150</div>
       </div>
 
       <div class="panel-actions">
-        <button class="btn-back" id="back3"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
-        <button class="btn-next" id="next3" disabled>Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
+        <button class="btn-back" id="back2"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
+        <button class="btn-next" id="next2" disabled>Nästa <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
       </div>
     </section>
 
-    <!-- ─── STEP 4 ─── -->
-    <section class="panel" id="panel-4" aria-labelledby="step4-title">
-      <h2 class="panel__title" id="step4-title">Bekräfta bokning</h2>
+    <!-- ─── STEP 3: BEKRÄFTA ─── -->
+    <section class="panel" id="panel-3" aria-labelledby="step3-title">
+      <h2 class="panel__title" id="step3-title">Bekräfta bokning</h2>
       <p class="panel__sub">Granska dina uppgifter innan du bekräftar</p>
 
       <div class="confirm-card">
@@ -976,11 +877,13 @@
           <div class="confirm-customer__label">Dina uppgifter</div>
           <div class="confirm-customer__row"><span>Namn:</span><span id="conf-name"></span></div>
           <div class="confirm-customer__row"><span>E-post:</span><span id="conf-email"></span></div>
+          <div class="confirm-customer__row" id="conf-phone-row" style="display:none;"><span>Telefon:</span><span id="conf-phone"></span></div>
+          <div class="confirm-customer__row" id="conf-message-row" style="display:none;"><span>Meddelande:</span><span id="conf-message"></span></div>
         </div>
       </div>
 
       <div class="panel-actions">
-        <button class="btn-back" id="back4"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
+        <button class="btn-back" id="back3"><i class="ti ti-arrow-left" aria-hidden="true"></i> Tillbaka</button>
         <button class="btn-confirm" id="btnConfirm">Boka nu, betala på plats</button>
       </div>
     </section>
@@ -1014,22 +917,18 @@
 const TREATMENTS = [
   // Order mirrors the treatment cards on the main page
   { name: 'Klassisk svensk massage',             lengths: [45, 60] },
-  { name: 'Nybesök Medicinsk massageterapi',     lengths: [60] },
   { name: 'Medicinsk massageterapi',             lengths: [30, 45, 60] },
   { name: 'Avslappningsmassage',                 lengths: [45, 60, 90] },
-  { name: 'Nybesök Fibromassage',               lengths: [90] },
-  { name: 'Fibromassage',                        lengths: [75] },
-  { name: 'Nybesök Lottorpsmetoden',             lengths: [75] },
-  { name: 'Lottorpsmetoden',                     lengths: [60] },
-  { name: 'Nybesök Fingerartros',                lengths: [30] },
-  { name: 'Fingerartros',                        lengths: [20] },
+  { name: 'Fibromassage',                        lengths: [75, 90] },
+  { name: 'Lottorpsmetoden',                     lengths: [60, 75] },
+  { name: 'Fingerartros',                        lengths: [20, 30] },
   { name: 'Lymfmassage',                         lengths: [60] },
   { name: 'Koppning',                            lengths: [45] },
-  { name: 'Nybesök Migrän eller huvudvärk',      lengths: [60] },
   { name: 'Migrän eller huvudvärk',              lengths: [30, 45, 60] },
 ];
 
 const PRICES = { 20: 340, 30: 590, 45: 690, 60: 890, 75: 1090, 90: 1290 };
+const ALL_DURATIONS = Object.keys(PRICES).map(Number);
 
 const SV_MONTHS = ['januari','februari','mars','april','maj','juni',
   'juli','augusti','september','oktober','november','december'];
@@ -1047,6 +946,7 @@ const state = {
   name: '',
   email: '',
   phone: '',
+  message: '',
   schedule: null,   // null = not fetched yet; {} = fetched but empty (all open fallback)
   calYear: 0,
   calMonth: 0,
@@ -1077,7 +977,7 @@ function todayStr() {
 // ─── STEP INDICATOR ─────────────────────────────────────────────────────────
 
 function updateStepIndicator(current) {
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 3; i++) {
     const ind = document.getElementById(`step-ind-${i}`);
     const bubble = document.getElementById(`bubble-${i}`);
     ind.classList.remove('is-current', 'is-done');
@@ -1090,7 +990,7 @@ function updateStepIndicator(current) {
     } else {
       bubble.textContent = i;
     }
-    if (i < 4) {
+    if (i < 3) {
       document.getElementById(`line-${i}`).classList.toggle('is-done', i < current);
     }
   }
@@ -1109,76 +1009,62 @@ function goTo(step) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── STEP 1 ──────────────────────────────────────────────────────────────────
+// ─── STEP 1a: DURATION ──────────────────────────────────────────────────────
 
-function renderTreatments() {
-  const list = document.getElementById('treatmentList');
-  list.innerHTML = '';
-  TREATMENTS.forEach((t, i) => {
+function renderDurations() {
+  const grid = document.getElementById('durationGrid');
+  grid.innerHTML = '';
+  ALL_DURATIONS.forEach(mins => {
     const btn = document.createElement('button');
-    btn.className = 'treatment-item';
+    btn.className = 'duration-pill';
     btn.setAttribute('role', 'option');
     btn.setAttribute('aria-selected', 'false');
-    btn.dataset.index = i;
+    btn.dataset.mins = mins;
     btn.innerHTML = `
-      <span class="treatment-item__check"></span>
-      <span class="treatment-item__name">${t.name}</span>`;
-    btn.addEventListener('click', () => selectTreatment(i));
-    list.appendChild(btn);
+      <span class="duration-pill__mins">${mins} min</span>
+      <span class="duration-pill__price">${formatPrice(mins)}</span>`;
+    btn.addEventListener('click', () => selectDuration(mins));
+    grid.appendChild(btn);
   });
 }
 
-function selectTreatment(index) {
-  state.sessionType = TREATMENTS[index].name;
-  state.sessionLength = null;
+function selectDuration(mins) {
+  state.sessionLength = mins;
 
-  document.querySelectorAll('.treatment-item').forEach((el, i) => {
-    const sel = i === index;
-    el.classList.toggle('is-selected', sel);
-    el.setAttribute('aria-selected', String(sel));
+  document.querySelectorAll('.duration-pill').forEach(btn => {
+    const sel = parseInt(btn.dataset.mins, 10) === mins;
+    btn.classList.toggle('is-selected', sel);
+    btn.setAttribute('aria-selected', String(sel));
   });
 
-  renderLengthContent(TREATMENTS[index]);
+  renderTreatmentSelect();
+
+  document.getElementById('calendarPlaceholder').style.display = 'none';
+  document.getElementById('datetimeGrid').style.display = 'grid';
+
+  updateNext1Gate();
+
+  // If a date was already picked, refresh slots for the new duration.
+  if (state.date) selectDate(state.date);
 }
 
-function renderLengthContent(t) {
-  const content = document.getElementById('lengthContent');
+// ─── STEP 1b: TREATMENT TYPE (OPTIONAL) ─────────────────────────────────────
 
-  if (t.lengths.length === 1) {
-    state.sessionLength = t.lengths[0];
-    content.innerHTML = `
-      <div class="fixed-length-box">
-        <div class="fixed-length-box__row">
-          <span class="fixed-length-box__mins">${t.lengths[0]} min</span>
-          <span class="fixed-length-box__price">${formatPrice(t.lengths[0])}</span>
-        </div>
-        <div class="fixed-length-box__note">Fast längd för denna behandling</div>
-      </div>`;
-    document.getElementById('next1').disabled = false;
-  } else {
-    state.sessionLength = null;
-    const optionsHtml = t.lengths.map(mins => `
-      <button class="length-option" data-mins="${mins}">
-        <span class="length-option__mins">${mins} min</span>
-        <span class="length-option__price">${formatPrice(mins)}</span>
-      </button>`).join('');
-    content.innerHTML = `<div class="length-options">${optionsHtml}</div>`;
+function renderTreatmentSelect() {
+  const select = document.getElementById('treatmentSelect');
+  const options = state.sessionLength
+    ? TREATMENTS.filter(t => t.lengths.includes(state.sessionLength))
+    : TREATMENTS;
 
-    content.querySelectorAll('.length-option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const mins = parseInt(btn.dataset.mins);
-        state.sessionLength = mins;
-        content.querySelectorAll('.length-option').forEach(b =>
-          b.classList.toggle('is-selected', parseInt(b.dataset.mins) === mins));
-        document.getElementById('next1').disabled = false;
-      });
-    });
+  const stillValid = options.some(t => t.name === state.sessionType);
+  if (!stillValid) state.sessionType = null;
 
-    document.getElementById('next1').disabled = true;
-  }
+  select.innerHTML = '<option value="">Ospecificerad</option>' +
+    options.map(t => `<option value="${t.name}">${t.name}</option>`).join('');
+  select.value = state.sessionType || '';
 }
 
-// ─── STEP 2: CALENDAR ────────────────────────────────────────────────────────
+// ─── STEP 1c: CALENDAR ───────────────────────────────────────────────────────
 
 async function fetchSchedule() {
   try {
@@ -1264,7 +1150,7 @@ function renderCalendar() {
 async function selectDate(dateStr) {
   state.date = dateStr;
   state.time = null;
-  document.getElementById('next2').disabled = true;
+  updateNext1Gate();
 
   // Remove any previous slot-taken error
   const prev = document.getElementById('slotsContainer').parentElement.querySelector('.slot-err');
@@ -1284,19 +1170,59 @@ async function selectDate(dateStr) {
     const res = await fetch(`/.netlify/functions/get-slots?date=${dateStr}&session_length=${state.sessionLength}`);
     if (!res.ok) throw new Error('bad status');
     const data = await res.json();
-    renderSlots(data.slots || []);
+    const slots = data.slots || [];
+    if (slots.length === 0) {
+      await renderEmptyWithAlternatives(dateStr);
+    } else {
+      renderSlots(slots);
+    }
   } catch {
     document.getElementById('slotsContainer').innerHTML =
       `<p class="slots-empty">Kunde inte hämta tider just nu. Kontrollera din anslutning och försök igen.</p>`;
   }
 }
 
-function renderSlots(slots) {
+async function renderEmptyWithAlternatives(dateStr) {
   const container = document.getElementById('slotsContainer');
-  if (!slots.length) {
-    container.innerHTML = `<p class="slots-empty">Inga lediga tider denna dag</p>`;
+  container.innerHTML = `<p class="slots-empty">Inga lediga tider denna dag</p>`;
+
+  const current = state.sessionLength;
+  const others = ALL_DURATIONS.filter(mins => mins !== current);
+
+  let results;
+  try {
+    results = await Promise.all(others.map(async mins => {
+      try {
+        const res = await fetch(`/.netlify/functions/get-slots?date=${dateStr}&session_length=${mins}`);
+        if (!res.ok) return { mins, slots: [] };
+        const data = await res.json();
+        return { mins, slots: data.slots || [] };
+      } catch {
+        return { mins, slots: [] };
+      }
+    }));
+  } catch {
     return;
   }
+
+  // Bail if the user has since changed date/duration while these were in flight
+  if (state.date !== dateStr || state.sessionLength !== current) return;
+
+  const available = results.filter(r => r.slots.length > 0);
+  if (!available.length) return;
+
+  const chips = available.map(r => `<button class="slot-pill" data-mins="${r.mins}">${r.mins} min</button>`).join('');
+  container.innerHTML = `
+    <p class="alt-duration-note">Inga lediga ${current} min-tider denna dag — men det finns lediga tider för ${available.map(r => `${r.mins} min`).join(', ')}.</p>
+    <div class="alt-duration-list">${chips}</div>`;
+
+  container.querySelectorAll('.alt-duration-list .slot-pill').forEach(btn => {
+    btn.addEventListener('click', () => selectDuration(parseInt(btn.dataset.mins, 10)));
+  });
+}
+
+function renderSlots(slots) {
+  const container = document.getElementById('slotsContainer');
   const grid = document.createElement('div');
   grid.className = 'slots-grid';
   grid.setAttribute('role', 'listbox');
@@ -1321,27 +1247,50 @@ function selectTime(t) {
     el.classList.toggle('is-selected', sel);
     el.setAttribute('aria-selected', String(sel));
   });
-  document.getElementById('next2').disabled = false;
+  updateNext1Gate();
 }
 
-// ─── STEP 3 ──────────────────────────────────────────────────────────────────
+// ─── STEP 1: NEXT-BUTTON GATE ───────────────────────────────────────────────
 
-function validateStep3() {
+function updateNext1Gate() {
+  document.getElementById('next1').disabled =
+    !(state.sessionLength && state.date && state.time);
+}
+
+// ─── STEP 2: INFO FORM ───────────────────────────────────────────────────────
+
+function validateStep2() {
   const name = document.getElementById('field-name').value.trim();
   const email = document.getElementById('field-email').value.trim();
-  document.getElementById('next3').disabled =
+  document.getElementById('next2').disabled =
     !(name.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
 }
 
-// ─── STEP 4 ──────────────────────────────────────────────────────────────────
+// ─── STEP 3: CONFIRM ─────────────────────────────────────────────────────────
 
 function populateConfirm() {
   document.getElementById('conf-date').textContent = formatDateSv(state.date);
   document.getElementById('conf-time').textContent = `${state.time} (${state.sessionLength} min)`;
-  document.getElementById('conf-type').textContent = state.sessionType;
+  document.getElementById('conf-type').textContent = state.sessionType || 'Ospecificerad';
   document.getElementById('conf-price').textContent = formatPrice(state.sessionLength);
   document.getElementById('conf-name').textContent = state.name;
   document.getElementById('conf-email').textContent = state.email;
+
+  const phoneRow = document.getElementById('conf-phone-row');
+  if (state.phone) {
+    document.getElementById('conf-phone').textContent = state.phone;
+    phoneRow.style.display = '';
+  } else {
+    phoneRow.style.display = 'none';
+  }
+
+  const messageRow = document.getElementById('conf-message-row');
+  if (state.message) {
+    document.getElementById('conf-message').textContent = state.message;
+    messageRow.style.display = '';
+  } else {
+    messageRow.style.display = 'none';
+  }
 }
 
 async function submitBooking() {
@@ -1361,15 +1310,16 @@ async function submitBooking() {
         customer_name: state.name,
         customer_email: state.email,
         customer_phone: state.phone,
+        customer_message: state.message,
       }),
     });
 
     const data = await res.json();
 
     if (data.error === 'slot_taken') {
-      goTo(2);
+      goTo(1);
       state.time = null;
-      document.getElementById('next2').disabled = true;
+      updateNext1Gate();
 
       const wrap = document.getElementById('slotsContainer').parentElement;
       const existing = wrap.querySelector('.slot-err');
@@ -1396,10 +1346,32 @@ async function submitBooking() {
   }
 }
 
+// ─── PREFILL FROM QUERY STRING ──────────────────────────────────────────────
+
+function applyPrefill() {
+  const params = new URLSearchParams(window.location.search);
+  const rawLength = params.get('length');
+  const prefTreatment = params.get('treatment');
+
+  if (rawLength && PRICES[rawLength]) {
+    selectDuration(parseInt(rawLength, 10));
+  }
+
+  if (prefTreatment) {
+    const select = document.getElementById('treatmentSelect');
+    const matches = Array.from(select.options).some(o => o.value === prefTreatment);
+    if (matches) {
+      select.value = prefTreatment;
+      state.sessionType = prefTreatment;
+    }
+  }
+}
+
 // ─── INIT ────────────────────────────────────────────────────────────────────
 
 async function init() {
-  renderTreatments();
+  renderDurations();
+  renderTreatmentSelect();
 
   const now = new Date();
   state.calYear = now.getFullYear();
@@ -1409,9 +1381,13 @@ async function init() {
   await fetchSchedule();
   renderCalendar();
 
+  applyPrefill();
+
+  document.getElementById('treatmentSelect').addEventListener('change', (e) => {
+    state.sessionType = e.target.value || null;
+  });
+
   document.getElementById('next1').addEventListener('click', () => goTo(2));
-  document.getElementById('back2').addEventListener('click', () => goTo(1));
-  document.getElementById('next2').addEventListener('click', () => goTo(3));
 
   document.getElementById('calPrev').addEventListener('click', () => {
     if (state.calMonth === 0) { state.calYear--; state.calMonth = 11; }
@@ -1424,19 +1400,23 @@ async function init() {
     renderCalendar();
   });
 
-  document.getElementById('back3').addEventListener('click', () => goTo(2));
-  document.getElementById('next3').addEventListener('click', () => {
+  document.getElementById('back2').addEventListener('click', () => goTo(1));
+  document.getElementById('next2').addEventListener('click', () => {
     state.name = document.getElementById('field-name').value.trim();
     state.email = document.getElementById('field-email').value.trim();
     state.phone = document.getElementById('field-phone').value.trim();
+    state.message = document.getElementById('field-message').value.trim();
     populateConfirm();
-    goTo(4);
+    goTo(3);
   });
 
-  document.getElementById('field-name').addEventListener('input', validateStep3);
-  document.getElementById('field-email').addEventListener('input', validateStep3);
+  document.getElementById('field-name').addEventListener('input', validateStep2);
+  document.getElementById('field-email').addEventListener('input', validateStep2);
+  document.getElementById('field-message').addEventListener('input', (e) => {
+    document.getElementById('messageCounter').textContent = `${e.target.value.length}/150`;
+  });
 
-  document.getElementById('back4').addEventListener('click', () => goTo(3));
+  document.getElementById('back3').addEventListener('click', () => goTo(2));
   document.getElementById('btnConfirm').addEventListener('click', submitBooking);
 }
 

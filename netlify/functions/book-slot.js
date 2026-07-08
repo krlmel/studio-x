@@ -1,5 +1,5 @@
 // POST /api/book-slot
-// Body: { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone }
+// Body: { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone, customer_message }
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;           // publishable key (kept for reference)
@@ -96,11 +96,13 @@ exports.handler = async (event) => {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Invalid JSON' }) };
   }
 
-  const { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone } = body;
+  const { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone, customer_message } = body;
 
   if (!date || !start_time || !session_type || !session_length || !customer_name || !customer_email) {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Missing required fields' }) };
   }
+
+  const trimmedMessage = typeof customer_message === 'string' ? customer_message.trim().slice(0, 150) : '';
 
   const sessionMins = parseInt(session_length, 10);
   const startMins = timeToMins(start_time);
@@ -147,6 +149,7 @@ exports.handler = async (event) => {
       customer_name,
       customer_email,
       customer_phone: customer_phone || null,
+      customer_message: trimmedMessage || null,
     });
 
     const formattedDate = formatDateSv(date);
@@ -194,6 +197,7 @@ exports.handler = async (event) => {
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Tid</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${start_time}–${end_time} (${sessionMins} min)</td></tr>
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Behandling</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${session_type}</td></tr>
               ${price ? `<tr><td style="padding:14px 20px;"><strong>Pris</strong></td><td style="padding:14px 20px;">${price}</td></tr>` : ''}
+              ${trimmedMessage ? `<tr><td style="padding:14px 20px;"><strong>Meddelande</strong></td><td style="padding:14px 20px;">${trimmedMessage}</td></tr>` : ''}
             </table>
           </div>
         </div>`,
