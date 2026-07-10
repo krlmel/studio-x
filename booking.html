@@ -1011,6 +1011,7 @@ const state = {
   phone: '',
   message: '',
   schedule: null,   // null = not fetched yet; {} = fetched but empty (all open fallback)
+  overrides: {},    // keyed by date string — date-specific exceptions that win over the weekday schedule
   calYear: 0,
   calMonth: 0,
 };
@@ -1123,8 +1124,9 @@ async function autoSelectFirstAvailableDate() {
   for (let i = 0; i <= MAX_ADVANCE_DAYS; i++) {
     const d = new Date(today);
     d.setDate(d.getDate() + i);
-    if (!isWeekdayOpen(d.getDay())) continue;
-    candidates.push(toDateStr(d.getFullYear(), d.getMonth(), d.getDate()));
+    const dateStr = toDateStr(d.getFullYear(), d.getMonth(), d.getDate());
+    if (!isDateOpen(dateStr, d.getDay())) continue;
+    candidates.push(dateStr);
   }
 
   let results;
@@ -1236,12 +1238,39 @@ async function fetchSchedule() {
   }
 }
 
+// Covers the whole booking window in one call — calendar navigation never
+// goes beyond [today, today + MAX_ADVANCE_DAYS], so no need to re-fetch per month.
+async function fetchOverrides() {
+  const today = new Date();
+  const start = toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+  const maxDate = new Date(today);
+  maxDate.setDate(maxDate.getDate() + MAX_ADVANCE_DAYS);
+  const end = toDateStr(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
+  try {
+    const res = await fetch(`/.netlify/functions/get-slots?mode=overrides&start=${start}&end=${end}`);
+    if (!res.ok) throw new Error('bad status');
+    const rows = await res.json();
+    state.overrides = {};
+    rows.forEach(r => { state.overrides[r.date] = r; });
+  } catch {
+    // Fallback: no overrides known — weekday schedule alone decides
+    state.overrides = {};
+  }
+}
+
 function isWeekdayOpen(jsDay) {
   const name = WEEKDAY_NAMES[jsDay];
   // If schedule fetch failed or is empty, fall back to allowing all weekdays
   if (!state.schedule || Object.keys(state.schedule).length === 0) return true;
   const s = state.schedule[name];
   return s && s.is_open;
+}
+
+// A date-specific override (open or closed) wins outright over the weekday default.
+function isDateOpen(dateStr, jsDay) {
+  const override = state.overrides[dateStr];
+  if (override) return !!override.is_open;
+  return isWeekdayOpen(jsDay);
 }
 
 function renderCalendar() {
@@ -1291,7 +1320,7 @@ function renderCalendar() {
     const jsDay = new Date(y, m, d).getDay();
     const isPast = dateStr < today;
     const isTooFarAhead = dateStr > maxDateStr;
-    const isOpen = isWeekdayOpen(jsDay);
+    const isOpen = isDateOpen(dateStr, jsDay);
     const isToday = dateStr === today;
     const isSelected = dateStr === state.date;
 
@@ -1547,8 +1576,8 @@ async function init() {
   state.calYear = now.getFullYear();
   state.calMonth = now.getMonth();
 
-  // Fetch schedule; render calendar once done (or on fallback)
-  await fetchSchedule();
+  // Fetch schedule + overrides; render calendar once done (or on fallback)
+  await Promise.all([fetchSchedule(), fetchOverrides()]);
   renderCalendar();
 
   applyPrefill();

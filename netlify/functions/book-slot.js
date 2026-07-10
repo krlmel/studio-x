@@ -126,19 +126,32 @@ exports.handler = async (event) => {
   const end_time = minsToTime(endMins);
 
   try {
-    // Get schedule for this weekday to find close_time
-    const d = new Date(date + 'T12:00:00Z');
-    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const weekday = weekdays[d.getUTCDay()];
-
-    const scheduleRows = await supabaseGet(
-      `schedule?weekday=eq.${weekday}&select=is_open,open_time,close_time`
+    // Date-specific override takes precedence over the recurring weekday schedule
+    const overrideRows = await supabaseGet(
+      `schedule_overrides?date=eq.${date}&select=is_open,open_time,close_time`
     );
-    if (!scheduleRows.length || !scheduleRows[0].is_open) {
-      return { statusCode: 409, headers: HEADERS, body: JSON.stringify({ error: 'slot_taken' }) };
-    }
 
-    const closeMins = timeToMins(scheduleRows[0].close_time);
+    let closeMins;
+    if (overrideRows.length) {
+      if (!overrideRows[0].is_open) {
+        return { statusCode: 409, headers: HEADERS, body: JSON.stringify({ error: 'slot_taken' }) };
+      }
+      closeMins = timeToMins(overrideRows[0].close_time);
+    } else {
+      // Get schedule for this weekday to find close_time
+      const d = new Date(date + 'T12:00:00Z');
+      const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const weekday = weekdays[d.getUTCDay()];
+
+      const scheduleRows = await supabaseGet(
+        `schedule?weekday=eq.${weekday}&select=is_open,open_time,close_time`
+      );
+      if (!scheduleRows.length || !scheduleRows[0].is_open) {
+        return { statusCode: 409, headers: HEADERS, body: JSON.stringify({ error: 'slot_taken' }) };
+      }
+
+      closeMins = timeToMins(scheduleRows[0].close_time);
+    }
 
     // Re-check slot availability (race condition guard)
     const bookingRows = await supabaseGet(

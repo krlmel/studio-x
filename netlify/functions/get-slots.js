@@ -47,6 +47,18 @@ exports.handler = async (event) => {
       return { statusCode: 200, headers: HEADERS, body: JSON.stringify(rows) };
     }
 
+    // Mode: return date-specific overrides in range, for calendar graying
+    if (params.mode === 'overrides') {
+      const { start, end } = params;
+      if (!start || !end) {
+        return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Missing start or end' }) };
+      }
+      const rows = await supabaseGet(
+        `schedule_overrides?date=gte.${start}&date=lte.${end}&select=date,is_open,open_time,close_time`
+      );
+      return { statusCode: 200, headers: HEADERS, body: JSON.stringify(rows) };
+    }
+
     const { date, session_length } = params;
     if (!date || !session_length) {
       return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Missing date or session_length' }) };
@@ -55,24 +67,39 @@ exports.handler = async (event) => {
     const sessionMins = parseInt(session_length, 10);
     console.log(`[get-slots] date=${date} session_length=${sessionMins}`);
 
-    // Weekday name from date
-    const d = new Date(date + 'T12:00:00Z');
-    const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const weekday = weekdays[d.getUTCDay()];
-    console.log(`[get-slots] weekday resolved to: ${weekday}`);
-
-    // Fetch schedule for this weekday
-    const scheduleRows = await supabaseGet(
-      `schedule?weekday=eq.${weekday}&select=is_open,open_time,close_time`
+    // Date-specific override takes precedence over the recurring weekday schedule
+    const overrideRows = await supabaseGet(
+      `schedule_overrides?date=eq.${date}&select=is_open,open_time,close_time`
     );
-    console.log(`[get-slots] schedule rows:`, JSON.stringify(scheduleRows));
+    console.log(`[get-slots] override rows for ${date}:`, JSON.stringify(overrideRows));
 
-    if (!scheduleRows.length || !scheduleRows[0].is_open) {
-      console.log(`[get-slots] day is closed or not found — returning empty slots`);
-      return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ slots: [], schedule: null }) };
+    let schedule;
+    if (overrideRows.length) {
+      if (!overrideRows[0].is_open) {
+        console.log(`[get-slots] day closed via override — returning empty slots`);
+        return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ slots: [], schedule: null }) };
+      }
+      schedule = overrideRows[0];
+    } else {
+      // Weekday name from date
+      const d = new Date(date + 'T12:00:00Z');
+      const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+      const weekday = weekdays[d.getUTCDay()];
+      console.log(`[get-slots] weekday resolved to: ${weekday}`);
+
+      // Fetch schedule for this weekday
+      const scheduleRows = await supabaseGet(
+        `schedule?weekday=eq.${weekday}&select=is_open,open_time,close_time`
+      );
+      console.log(`[get-slots] schedule rows:`, JSON.stringify(scheduleRows));
+
+      if (!scheduleRows.length || !scheduleRows[0].is_open) {
+        console.log(`[get-slots] day is closed or not found — returning empty slots`);
+        return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ slots: [], schedule: null }) };
+      }
+
+      schedule = scheduleRows[0];
     }
-
-    const schedule = scheduleRows[0];
     const openMins = timeToMins(schedule.open_time);
     const closeMins = timeToMins(schedule.close_time);
     console.log(`[get-slots] open=${schedule.open_time} (${openMins} min) close=${schedule.close_time} (${closeMins} min)`);

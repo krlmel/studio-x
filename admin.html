@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Adminpanel — Magnus Massageterapi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,800;1,300&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0f1f16;
+      --accent:       #DCFF76;
+      --cream:        #f0ede4;
+      --cream-card:   #ffffff;
+      --cream-border: rgba(45,82,64,0.15);
+      --cream-head:   #0f1f16;
+      --cream-body:   #4a6355;
+      --cream-label:  #2d5240;
+      --cream-muted:  rgba(74,99,85,0.55);
+      --cream-input:  #f7f5f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--cream-head);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--cream-label);
+      outline-offset: 3px;
+    }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      background: var(--bg);
+      border-bottom: 1px solid rgba(220,255,118,0.12);
+    }
+
+    .nav__logo { display: flex; flex-direction: column; line-height: 1; text-decoration: none; }
+    .nav__logo-name {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #f5f5f0;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .nav__logo-sub {
+      font-size: 14px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+
+    .nav__action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      color: rgba(245,245,240,0.6);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav__action:hover { color: #f5f5f0; }
+
+    /* ─── MAIN ─── */
+    main {
+      flex: 1;
+      padding: 80px 5% 60px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .admin-wrap { width: 100%; max-width: 1100px; }
+
+    .panel {
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 2px 16px rgba(45,82,64,0.07);
+    }
+
+    .panel__title {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: clamp(20px, 3vw, 26px);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--cream-head);
+      margin-bottom: 6px;
+    }
+
+    .panel__sub { color: var(--cream-body); font-size: 14px; margin-bottom: 28px; }
+
+    /* ─── LOGIN ─── */
+    .login-view { display: flex; justify-content: center; padding-top: 40px; width: 100%; }
+    .login-panel { max-width: 420px; width: 100%; text-align: center; }
+    .login-panel .form-group { text-align: left; }
+
+    /* ─── FORM ELEMENTS ─── */
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cream-label);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--cream-input);
+      border: 1px solid var(--cream-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--cream-head);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--cream-label); }
+
+    .slot-err { font-size: 13px; color: #c0392b; margin-bottom: 14px; line-height: 1.5; min-height: 1px; }
+    .slots-empty { color: var(--cream-muted); font-size: 14px; }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--cream-border);
+      border-radius: 24px;
+      padding: 10px 20px;
+      color: var(--cream-head);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .btn-back:hover { border-color: var(--cream-label); }
+
+    .btn-confirm {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--bg);
+      border: none;
+      border-radius: 24px;
+      padding: 13px 28px;
+      color: var(--accent);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-confirm:hover { opacity: 0.85; }
+    .btn-confirm:disabled { opacity: 0.4; cursor: default; }
+
+    /* ─── TABS ─── */
+    .tab-bar { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .tab-btn {
+      background: var(--cream-card);
+      border: 1px solid var(--cream-border);
+      border-radius: 24px;
+      padding: 10px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cream-body);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .tab-btn:hover { border-color: var(--cream-label); }
+    .tab-btn.is-active { background: var(--bg); border-color: var(--bg); color: var(--accent); }
+
+    .admin-panel { margin-bottom: 24px; }
+    .admin-block { margin-bottom: 32px; }
+    .admin-block:last-child { margin-bottom: 0; }
+    .admin-block h3 {
+      font-family: 'Barlow', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cream-head);
+      margin-bottom: 14px;
+    }
+
+    /* ─── HOURS ROWS (Öppettider + template days) ─── */
+    .hours-rows { display: flex; flex-direction: column; gap: 4px; margin-bottom: 20px; }
+    .hours-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--cream-border);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row__label { width: 90px; flex-shrink: 0; font-weight: 700; font-size: 14px; }
+    .hours-row input[type="time"] { max-width: 120px; }
+    .hours-row__sep { color: var(--cream-muted); }
+
+    .toggle-switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--cream-border);
+      border-radius: 24px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 18px; height: 18px;
+      left: 3px; top: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--bg); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .admin-actions { display: flex; justify-content: flex-end; }
+    .save-msg { font-size: 13px; color: var(--cream-body); margin-top: 10px; text-align: right; min-height: 1em; }
+
+    /* ─── SPECIALVECKOR ─── */
+    .template-list { display: flex; flex-direction: column; gap: 10px; }
+    .template-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    .new-template-form {
+      margin-top: 16px;
+      padding: 24px;
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 12px;
+    }
+    .apply-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .apply-row .form-input { flex: 1; min-width: 160px; }
+
+    /* ─── BOKNINGAR / BLOCKERINGAR ─── */
+    .data-table { display: flex; flex-direction: column; gap: 10px; }
+    .booking-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 18px;
+      background: var(--cream);
+      border: 1px solid var(--cream-border);
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .booking-row__main { flex: 1; }
+    .booking-row__main strong { color: var(--cream-head); }
+
+    .block-form-grid { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+    .block-form-grid .form-input { flex: 1; min-width: 130px; }
+
+    @media (max-width: 640px) {
+      .hours-row__label { width: 100%; }
+      .block-form-grid .form-input { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" role="navigation" aria-label="Navigering">
+    <a href="index.html" class="nav__logo">
+      <span class="nav__logo-name">Magnus</span>
+      <span class="nav__logo-sub">Adminpanel</span>
+    </a>
+    <button class="nav__action" id="logoutBtn" style="display:none;">
+      <i class="ti ti-logout" aria-hidden="true"></i> Logga ut
+    </button>
+  </nav>
+</header>
+
+<main>
+  <div class="admin-wrap">
+
+    <!-- ─── LOGIN ─── -->
+    <div id="loginView" class="login-view">
+      <div class="panel login-panel">
+        <h1 class="panel__title">Logga in</h1>
+        <p class="panel__sub">Adminpanel — Magnus Massageterapi</p>
+        <form id="loginForm">
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">E-post</label>
+            <input class="form-input" type="email" id="loginEmail" autocomplete="username" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Lösenord</label>
+            <input class="form-input" type="password" id="loginPassword" autocomplete="current-password" required />
+          </div>
+          <p class="slot-err" id="loginError"></p>
+          <button type="submit" class="btn-confirm" id="loginSubmit" style="width:100%;">Logga in</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ─── DASHBOARD ─── -->
+    <div id="dashboardView" class="dashboard-view" style="display:none;">
+      <div class="tab-bar" role="tablist" aria-label="Adminflikar">
+        <button class="tab-btn" data-tab="hours" id="tab-hours">Öppettider</button>
+        <button class="tab-btn" data-tab="weeks" id="tab-weeks">Specialveckor</button>
+        <button class="tab-btn" data-tab="bookings" id="tab-bookings">Bokningar</button>
+        <button class="tab-btn" data-tab="blocks" id="tab-blocks">Blockeringar</button>
+      </div>
+
+      <!-- Öppettider -->
+      <section id="panel-hours" class="panel admin-panel">
+        <h2 class="panel__title">Öppettider</h2>
+        <p class="panel__sub">Standardschema, används varje vecka om inget annat är inställt.</p>
+        <div id="hoursRows" class="hours-rows"></div>
+        <div class="admin-actions">
+          <button class="btn-confirm" id="saveHours">Spara ändringar</button>
+        </div>
+        <p class="save-msg" id="hoursMsg"></p>
+      </section>
+
+      <!-- Specialveckor -->
+      <section id="panel-weeks" class="panel admin-panel" style="display:none;">
+        <h2 class="panel__title">Specialveckor</h2>
+        <p class="panel__sub">Spara återanvändbara veckoscheman och applicera dem på valfri vecka.</p>
+
+        <div class="admin-block">
+          <h3>Sparade veckor</h3>
+          <div id="templatesList" class="template-list"></div>
+        </div>
+
+        <div class="admin-block">
+          <button class="btn-back" id="newTemplateToggle">+ Ny specialvecka</button>
+          <div id="newTemplateForm" class="new-template-form" style="display:none;">
+            <div class="form-group">
+              <label class="form-label" for="templateName">Namn</label>
+              <input class="form-input" id="templateName" placeholder="T.ex. Sommarvecka" />
+            </div>
+            <div id="templateDaysRows" class="hours-rows"></div>
+            <div class="admin-actions">
+              <button class="btn-confirm" id="saveTemplate">Spara specialvecka</button>
+            </div>
+            <p class="save-msg" id="templateMsg"></p>
+          </div>
+        </div>
+
+        <div class="admin-block">
+          <h3>Använd på en vecka</h3>
+          <div class="apply-row">
+            <select class="form-input" id="applyTemplateSelect"></select>
+            <input type="date" class="form-input" id="applyWeekStart" />
+            <button class="btn-confirm" id="applyTemplateBtn">Använd</button>
+          </div>
+          <p class="save-msg" id="applyMsg" style="text-align:left;"></p>
+        </div>
+
+        <div class="admin-block">
+          <h3>Kommande överskrivna veckor</h3>
+          <div id="overridesList" class="template-list"></div>
+        </div>
+      </section>
+
+      <!-- Bokningar -->
+      <section id="panel-bookings" class="panel admin-panel" style="display:none;">
+        <h2 class="panel__title">Bokningar</h2>
+        <p class="panel__sub">Kommande bokningar, 60 dagar framåt.</p>
+        <div id="bookingsList" class="data-table"></div>
+      </section>
+
+      <!-- Blockeringar -->
+      <section id="panel-blocks" class="panel admin-panel" style="display:none;">
+        <h2 class="panel__title">Blockeringar</h2>
+        <p class="panel__sub">Reservera tid utan att skapa en bokning, t.ex. för egna ärenden.</p>
+        <div class="block-form-grid">
+          <input type="date" class="form-input" id="blockDate" />
+          <input type="time" class="form-input" id="blockStart" />
+          <input type="time" class="form-input" id="blockEnd" />
+          <input type="text" class="form-input" id="blockNote" placeholder="Anteckning (valfritt)" maxlength="150" />
+          <button class="btn-confirm" id="addBlockBtn">Blockera</button>
+        </div>
+        <p class="save-msg" id="blockMsg" style="text-align:left; margin-bottom:16px;"></p>
+        <div id="blocksList" class="data-table"></div>
+      </section>
+
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+// TODO(Karl): paste the real values from the Supabase dashboard → Settings → API.
+// The anon/public key is safe to expose client-side — that's what it's for.
+const SUPABASE_URL = 'https://sgzdkmvaldfwhicwukyk.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_dzYu6wwmfNKNEotXhR5-OA_iVsTe0z0';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const WEEKDAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const WEEKDAY_LABELS = {
+  monday: 'Måndag', tuesday: 'Tisdag', wednesday: 'Onsdag', thursday: 'Torsdag',
+  friday: 'Fredag', saturday: 'Lördag', sunday: 'Söndag',
+};
+const SV_MONTHS = ['januari','februari','mars','april','maj','juni',
+  'juli','augusti','september','oktober','november','december'];
+
+// ─── DATE HELPERS ───────────────────────────────────────────────────────────
+
+function toDateStr(y, m, d) {
+  return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+function todayStr() {
+  const d = new Date();
+  return toDateStr(d.getFullYear(), d.getMonth(), d.getDate());
+}
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  d.setUTCDate(d.getUTCDate() + n);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+function formatSv(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return `${d.getUTCDate()} ${SV_MONTHS[d.getUTCMonth()]}`;
+}
+function mondayOf(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  const diff = (d.getUTCDay() + 6) % 7; // days since Monday (0=Sun..6=Sat → shift)
+  d.setUTCDate(d.getUTCDate() - diff);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
+// ─── AUTH ───────────────────────────────────────────────────────────────────
+
+async function authedFetch(name, { method = 'GET', qs = '', body } = {}) {
+  const { data: { session } } = await sb.auth.getSession();
+  const res = await fetch(`/.netlify/functions/${name}${qs}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${session ? session.access_token : ''}`,
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error || `Något gick fel (${res.status})`);
+  return data;
+}
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginSubmit');
+  errEl.textContent = '';
+  btn.disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  btn.disabled = false;
+  if (error) errEl.textContent = 'Fel e-post eller lösenord.';
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => sb.auth.signOut());
+
+let dashboardInitialized = false;
+sb.auth.onAuthStateChange((_event, session) => {
+  const isAuthed = !!session;
+  document.getElementById('loginView').style.display = isAuthed ? 'none' : 'flex';
+  document.getElementById('dashboardView').style.display = isAuthed ? 'block' : 'none';
+  document.getElementById('logoutBtn').style.display = isAuthed ? 'inline-flex' : 'none';
+  if (isAuthed && !dashboardInitialized) {
+    dashboardInitialized = true;
+    showTab('hours');
+  }
+  if (!isAuthed) dashboardInitialized = false;
+});
+
+// ─── TABS ───────────────────────────────────────────────────────────────────
+
+const TAB_LOADERS = {
+  hours: loadHours,
+  weeks: async () => { await loadTemplates(); await loadOverrides(); },
+  bookings: loadBookings,
+  blocks: loadBlocks,
+};
+
+function showTab(tab) {
+  Object.keys(TAB_LOADERS).forEach((t) => {
+    document.getElementById(`tab-${t}`).classList.toggle('is-active', t === tab);
+    document.getElementById(`panel-${t}`).style.display = t === tab ? 'block' : 'none';
+  });
+  TAB_LOADERS[tab]();
+}
+
+document.querySelectorAll('.tab-btn').forEach((btn) => {
+  btn.addEventListener('click', () => showTab(btn.dataset.tab));
+});
+
+// ─── ÖPPETTIDER ─────────────────────────────────────────────────────────────
+
+function renderHoursRow(row) {
+  return `
+    <div class="hours-row" data-weekday="${row.weekday}">
+      <span class="hours-row__label">${WEEKDAY_LABELS[row.weekday]}</span>
+      <label class="toggle-switch">
+        <input type="checkbox" class="hours-open-toggle" ${row.is_open ? 'checked' : ''} />
+        <span class="toggle-slider"></span>
+      </label>
+      <input type="time" class="form-input hours-open-time" value="${row.open_time ? row.open_time.slice(0,5) : ''}" ${row.is_open ? '' : 'disabled'} />
+      <span class="hours-row__sep">–</span>
+      <input type="time" class="form-input hours-close-time" value="${row.close_time ? row.close_time.slice(0,5) : ''}" ${row.is_open ? '' : 'disabled'} />
+    </div>`;
+}
+
+function wireHoursToggles(container) {
+  container.querySelectorAll('.hours-open-toggle').forEach((cb) => {
+    cb.addEventListener('change', () => {
+      const row = cb.closest('.hours-row');
+      row.querySelectorAll('input[type="time"]').forEach((t) => { t.disabled = !cb.checked; });
+    });
+  });
+}
+
+function orderedScheduleRows(rows) {
+  return WEEKDAYS.map((wd) => rows.find((r) => r.weekday === wd) || { weekday: wd, is_open: false, open_time: '09:00', close_time: '17:00' });
+}
+
+function collectHoursRows(container) {
+  return Array.from(container.querySelectorAll('.hours-row')).map((row) => ({
+    weekday: row.dataset.weekday,
+    is_open: row.querySelector('.hours-open-toggle').checked,
+    open_time: row.querySelector('.hours-open-time').value,
+    close_time: row.querySelector('.hours-close-time').value,
+  }));
+}
+
+async function loadHours() {
+  const container = document.getElementById('hoursRows');
+  try {
+    const rows = await authedFetch('admin-schedule');
+    container.innerHTML = orderedScheduleRows(rows).map(renderHoursRow).join('');
+    wireHoursToggles(container);
+  } catch (err) {
+    container.innerHTML = `<p class="slot-err">Kunde inte hämta öppettider: ${err.message}</p>`;
+  }
+}
+
+document.getElementById('saveHours').addEventListener('click', async () => {
+  const msg = document.getElementById('hoursMsg');
+  msg.textContent = 'Sparar…';
+  try {
+    await authedFetch('admin-schedule', { method: 'PUT', body: collectHoursRows(document.getElementById('hoursRows')) });
+    msg.textContent = 'Sparat.';
+  } catch (err) {
+    msg.textContent = `Kunde inte spara: ${err.message}`;
+  }
+});
+
+// ─── SPECIALVECKOR ──────────────────────────────────────────────────────────
+
+let templatesCache = [];
+
+async function loadTemplates() {
+  const list = document.getElementById('templatesList');
+  const select = document.getElementById('applyTemplateSelect');
+  try {
+    templatesCache = await authedFetch('admin-templates');
+  } catch (err) {
+    list.innerHTML = `<p class="slot-err">Kunde inte hämta specialveckor: ${err.message}</p>`;
+    return;
+  }
+
+  list.innerHTML = templatesCache.length
+    ? templatesCache.map((t) => `
+      <div class="template-row">
+        <span>${t.name}</span>
+        <button class="btn-back template-delete" data-id="${t.id}">Ta bort</button>
+      </div>`).join('')
+    : '<p class="slots-empty">Inga sparade veckor ännu.</p>';
+
+  select.innerHTML = '<option value="">Välj specialvecka…</option>' +
+    templatesCache.map((t) => `<option value="${t.id}">${t.name}</option>`).join('');
+
+  list.querySelectorAll('.template-delete').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Ta bort den här specialveckan?')) return;
+      await authedFetch('admin-templates', { method: 'DELETE', qs: `?id=${btn.dataset.id}` });
+      loadTemplates();
+    });
+  });
+}
+
+document.getElementById('newTemplateToggle').addEventListener('click', async () => {
+  const form = document.getElementById('newTemplateForm');
+  const opening = form.style.display === 'none';
+  form.style.display = opening ? 'block' : 'none';
+  if (!opening) return;
+
+  const rowsContainer = document.getElementById('templateDaysRows');
+  rowsContainer.innerHTML = '<p class="slots-empty">Hämtar standardschema…</p>';
+  try {
+    const rows = await authedFetch('admin-schedule');
+    rowsContainer.innerHTML = orderedScheduleRows(rows).map(renderHoursRow).join('');
+    wireHoursToggles(rowsContainer);
+  } catch (err) {
+    rowsContainer.innerHTML = `<p class="slot-err">Kunde inte hämta standardschema: ${err.message}</p>`;
+  }
+});
+
+document.getElementById('saveTemplate').addEventListener('click', async () => {
+  const msg = document.getElementById('templateMsg');
+  const name = document.getElementById('templateName').value.trim();
+  if (!name) { msg.textContent = 'Ange ett namn.'; return; }
+  const days = collectHoursRows(document.getElementById('templateDaysRows'));
+  msg.textContent = 'Sparar…';
+  try {
+    await authedFetch('admin-templates', { method: 'POST', body: { name, days } });
+    msg.textContent = 'Sparat.';
+    document.getElementById('templateName').value = '';
+    document.getElementById('newTemplateForm').style.display = 'none';
+    loadTemplates();
+  } catch (err) {
+    msg.textContent = `Kunde inte spara: ${err.message}`;
+  }
+});
+
+document.getElementById('applyTemplateBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('applyMsg');
+  const templateId = document.getElementById('applyTemplateSelect').value;
+  const weekStart = document.getElementById('applyWeekStart').value;
+  if (!templateId || !weekStart) { msg.textContent = 'Välj både specialvecka och startdatum.'; return; }
+  msg.textContent = 'Använder…';
+  try {
+    await authedFetch('admin-overrides', { method: 'POST', body: { templateId: Number(templateId), weekStart } });
+    msg.textContent = 'Klart — veckan är uppdaterad.';
+    loadOverrides();
+  } catch (err) {
+    msg.textContent = `Kunde inte använda specialveckan: ${err.message}`;
+  }
+});
+
+async function loadOverrides() {
+  const list = document.getElementById('overridesList');
+  const start = todayStr();
+  const end = addDays(start, 90);
+  let rows;
+  try {
+    rows = await authedFetch('admin-overrides', { qs: `?start=${start}&end=${end}` });
+  } catch (err) {
+    list.innerHTML = `<p class="slot-err">Kunde inte hämta överskrivna veckor: ${err.message}</p>`;
+    return;
+  }
+
+  if (!rows.length) {
+    list.innerHTML = '<p class="slots-empty">Inga överskrivna veckor just nu.</p>';
+    return;
+  }
+
+  const weeks = {};
+  rows.forEach((r) => {
+    const wk = mondayOf(r.date);
+    (weeks[wk] = weeks[wk] || []).push(r);
+  });
+
+  list.innerHTML = Object.keys(weeks).sort().map((wk) => {
+    const days = weeks[wk];
+    const templateRow = days.find((d) => d.source_template_id);
+    const template = templateRow ? templatesCache.find((t) => t.id === templateRow.source_template_id) : null;
+    const label = template ? template.name : 'Manuell ändring';
+    return `
+      <div class="template-row">
+        <span>Vecka från ${formatSv(wk)} — ${label} (${days.length} dag${days.length > 1 ? 'ar' : ''})</span>
+        <button class="btn-back override-clear" data-week="${wk}">Återställ till standard</button>
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('.override-clear').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Återställ hela veckan till standardschemat?')) return;
+      const days = weeks[btn.dataset.week];
+      await Promise.all(days.map((d) => authedFetch('admin-overrides', { method: 'DELETE', qs: `?date=${d.date}` })));
+      loadOverrides();
+    });
+  });
+}
+
+// ─── BOKNINGAR ──────────────────────────────────────────────────────────────
+
+async function loadBookings() {
+  const list = document.getElementById('bookingsList');
+  const start = todayStr();
+  const end = addDays(start, 60);
+  let rows;
+  try {
+    rows = await authedFetch('admin-bookings', { qs: `?start=${start}&end=${end}` });
+  } catch (err) {
+    list.innerHTML = `<p class="slot-err">Kunde inte hämta bokningar: ${err.message}</p>`;
+    return;
+  }
+
+  if (!rows.length) {
+    list.innerHTML = '<p class="slots-empty">Inga kommande bokningar.</p>';
+    return;
+  }
+
+  list.innerHTML = rows.map((b) => `
+    <div class="booking-row">
+      <div class="booking-row__main">
+        <strong>${b.customer_name}</strong> — ${b.session_type || 'Ospecificerad behandling'}<br>
+        ${formatSv(b.date)} kl. ${b.start_time.slice(0,5)}–${b.end_time.slice(0,5)}<br>
+        ${b.customer_email}${b.customer_phone ? ` · ${b.customer_phone}` : ''}
+        ${b.customer_message ? `<br>"${b.customer_message}"` : ''}
+      </div>
+      <button class="btn-back booking-cancel" data-id="${b.id}">Avboka</button>
+    </div>`).join('');
+
+  list.querySelectorAll('.booking-cancel').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Avboka den här tiden?')) return;
+      await authedFetch('admin-bookings', { method: 'DELETE', qs: `?id=${btn.dataset.id}` });
+      loadBookings();
+    });
+  });
+}
+
+// ─── BLOCKERINGAR ───────────────────────────────────────────────────────────
+
+async function loadBlocks() {
+  const list = document.getElementById('blocksList');
+  const start = todayStr();
+  const end = addDays(start, 60);
+  let rows;
+  try {
+    rows = await authedFetch('admin-blocks', { qs: `?start=${start}&end=${end}` });
+  } catch (err) {
+    list.innerHTML = `<p class="slot-err">Kunde inte hämta blockeringar: ${err.message}</p>`;
+    return;
+  }
+
+  if (!rows.length) {
+    list.innerHTML = '<p class="slots-empty">Inga blockeringar.</p>';
+    return;
+  }
+
+  list.innerHTML = rows.map((b) => `
+    <div class="booking-row">
+      <div class="booking-row__main">
+        ${formatSv(b.date)} kl. ${b.start_time.slice(0,5)}–${b.end_time.slice(0,5)}
+        ${b.customer_message ? `<br>"${b.customer_message}"` : ''}
+      </div>
+      <button class="btn-back block-remove" data-id="${b.id}">Ta bort</button>
+    </div>`).join('');
+
+  list.querySelectorAll('.block-remove').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      if (!confirm('Ta bort blockeringen?')) return;
+      await authedFetch('admin-blocks', { method: 'DELETE', qs: `?id=${btn.dataset.id}` });
+      loadBlocks();
+    });
+  });
+}
+
+document.getElementById('addBlockBtn').addEventListener('click', async () => {
+  const msg = document.getElementById('blockMsg');
+  const date = document.getElementById('blockDate').value;
+  const start_time = document.getElementById('blockStart').value;
+  const end_time = document.getElementById('blockEnd').value;
+  const note = document.getElementById('blockNote').value.trim();
+  if (!date || !start_time || !end_time) { msg.textContent = 'Fyll i datum, starttid och sluttid.'; return; }
+  msg.textContent = 'Sparar…';
+  try {
+    await authedFetch('admin-blocks', { method: 'POST', body: { date, start_time, end_time, note } });
+    msg.textContent = 'Blockerat.';
+    document.getElementById('blockDate').value = '';
+    document.getElementById('blockStart').value = '';
+    document.getElementById('blockEnd').value = '';
+    document.getElementById('blockNote').value = '';
+    loadBlocks();
+  } catch (err) {
+    msg.textContent = `Kunde inte blockera: ${err.message}`;
+  }
+});
+</script>
+</body>
+</html>
