@@ -104,9 +104,12 @@ exports.handler = async (event) => {
 
   const { date, start_time, session_type, session_length, customer_name, customer_email, customer_phone, customer_message } = body;
 
-  if (!date || !start_time || !session_type || !session_length || !customer_name || !customer_email) {
+  if (!date || !start_time || !session_length || !customer_name || !customer_email) {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: 'Missing required fields' }) };
   }
+
+  // Treatment is optional in the UI ("Ospecificerad") — default it rather than reject.
+  const sessionType = session_type || 'Ospecificerad';
 
   const now = new Date();
   const todayStr = toUtcDateStr(now);
@@ -174,7 +177,7 @@ exports.handler = async (event) => {
       end_time,
       type: 'booking',
       session_length: sessionMins,
-      session_type,
+      session_type: sessionType,
       customer_name,
       customer_email,
       customer_phone: customer_phone || null,
@@ -200,7 +203,7 @@ exports.handler = async (event) => {
             <table style="width:100%;border-collapse:collapse;background:#f0ede4;border-radius:8px;overflow:hidden;">
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Datum</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${formattedDate}</td></tr>
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Tid</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${start_time} (${sessionMins} min)</td></tr>
-              <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Behandling</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${session_type}</td></tr>
+              <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Behandling</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${sessionType}</td></tr>
               ${price ? `<tr><td style="padding:14px 20px;"><strong>Pris</strong></td><td style="padding:14px 20px;">${price} — betalas på plats</td></tr>` : ''}
             </table>
             <p style="margin:24px 0 0;color:#4a6355;font-size:14px;">Köpenhamnsvägen 43, 217 71 Malmö (hos Kiropraktik &amp; Rehab).<br>Vid avbokning, kontakta oss via magnusmassageterapi@gmail.com.</p>
@@ -224,7 +227,7 @@ exports.handler = async (event) => {
               ${customer_phone ? `<tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Telefon</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${customer_phone}</td></tr>` : ''}
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Datum</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${formattedDate}</td></tr>
               <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Tid</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${start_time}–${end_time} (${sessionMins} min)</td></tr>
-              <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Behandling</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${session_type}</td></tr>
+              <tr><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;"><strong>Behandling</strong></td><td style="padding:14px 20px;border-bottom:1px solid #d8d3c8;">${sessionType}</td></tr>
               ${price ? `<tr><td style="padding:14px 20px;"><strong>Pris</strong></td><td style="padding:14px 20px;">${price}</td></tr>` : ''}
               ${trimmedMessage ? `<tr><td style="padding:14px 20px;"><strong>Meddelande</strong></td><td style="padding:14px 20px;">${trimmedMessage}</td></tr>` : ''}
             </table>

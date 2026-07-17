@@ -1503,7 +1503,7 @@ async function submitBooking() {
       body: JSON.stringify({
         date: state.date,
         start_time: state.time,
-        session_type: state.sessionType,
+        session_type: state.sessionType || 'Ospecificerad',
         session_length: state.sessionLength,
         customer_name: state.name,
         customer_email: state.email,
